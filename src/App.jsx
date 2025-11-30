@@ -10,6 +10,7 @@ import SolutionPage from './pages/SolutionPage';
 import SupportPage from './pages/SupportPage';
 import BusinessSetupPage from './pages/Auth/BusinessSetupPage';
 import MobileVerificationPage from './pages/Auth/MobileVerificationPage';
+import VerificationCompletePage from './pages/Auth/VerificationCompletePage';
 import TransactionPage from './pages/Dashboard/TransactionPage';
 import AccountPage from './pages/Dashboard/AccountPage';
 import CardPage from './pages/Dashboard/CardPage';
@@ -58,6 +59,7 @@ function App() {
             <Route path='/support' element={<SupportPage/>} />
             <Route path='/business/setup' element={<BusinessSetupPage/>} />
             <Route path='/verify' element={<MobileVerificationPage/>} />
+            <Route path='/verification-complete' element={<VerificationCompletePage/>} />
 
 
 

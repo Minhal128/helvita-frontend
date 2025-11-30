@@ -48,6 +48,7 @@ const BusinessSetupPage = () => {
     const [showQrCode, setShowQrCode] = useState(false);
     const [verificationComplete, setVerificationComplete] = useState(false);
     const [verificationSessionId, setVerificationSessionId] = useState('');
+    const [verificationUrl, setVerificationUrl] = useState('');
     const [qrCodeImage, setQrCodeImage] = useState('');
     const [loadingQR, setLoadingQR] = useState(false);
     const [pollingInterval, setPollingInterval] = useState(null);
@@ -179,7 +180,7 @@ const BusinessSetupPage = () => {
         setLoadingQR(true);
 
         try {
-            // First create identity session
+            // First create identity session - this now returns the Stripe-hosted URL
             const identityResponse = await setupAPI.businessIdentity({ email });
             
             if (identityResponse.msg === 'Invalid user') {
@@ -188,23 +189,28 @@ const BusinessSetupPage = () => {
                 return;
             }
             
-            if (!identityResponse.client_secret) {
+            if (!identityResponse.verification_url) {
                 toast.error(identityResponse.msg || 'Failed to create verification session');
                 setLoadingQR(false);
                 return;
             }
 
-            // Then generate QR code
+            // Then generate QR code - now uses the Stripe-hosted URL
             const qrResponse = await setupAPI.generateQRCode(email);
             
             if (qrResponse.success) {
                 setQrCodeImage(qrResponse.qrCode);
                 setVerificationSessionId(qrResponse.verificationSessionId);
+                setVerificationUrl(qrResponse.verificationUrl);
                 setShowQrCode(true);
                 setCurrentStep(null);
                 
                 // Start polling for verification status
                 startPolling(email, qrResponse.verificationSessionId);
+            } else if (qrResponse.needsNewSession) {
+                // Session expired, try creating a new one
+                toast.error('Verification session expired. Creating a new one...');
+                setTimeout(() => handleGenerateQRCode(), 1000);
             } else {
                 toast.error(qrResponse.msg || 'Failed to generate QR code');
             }
@@ -632,7 +638,7 @@ const BusinessSetupPage = () => {
 
                         <h2 className="text-2xl font-semibold text-gray-800 mb-2">Scan QR code</h2>
 
-                        <p className="text-gray mb-3">Scan the QR code below to continue your verification</p>
+                        <p className="text-gray mb-3">Scan the QR code below to continue your verification on Stripe's secure page</p>
 
                         <h2 className="text-gray-800 mb-2">Scan QR code below with your smart phone</h2>
 
@@ -646,10 +652,26 @@ const BusinessSetupPage = () => {
                             )}
                         </div>
 
+                        {verificationUrl && (
+                            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <p className="text-sm text-gray-600 mb-2">
+                                    <strong>Can't scan?</strong> Open this link on your mobile device:
+                                </p>
+                                <a 
+                                    href={verificationUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:text-blue-800 text-sm break-all underline"
+                                >
+                                    Open Verification Page
+                                </a>
+                            </div>
+                        )}
+
                         <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                             <p className="text-sm text-blue-800">
                                 <strong>Waiting for verification...</strong><br />
-                                Please scan the QR code with your mobile device and upload your documents. 
+                                Please scan the QR code with your mobile device and upload your documents on the Stripe verification page. 
                                 This page will automatically update when verification is complete.
                             </p>
                         </div>
