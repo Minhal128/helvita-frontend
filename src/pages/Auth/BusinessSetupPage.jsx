@@ -172,6 +172,8 @@ const BusinessSetupPage = () => {
     const handleGenerateQRCode = async () => {
         const email = localStorage.getItem('registerEmail');
         
+        console.log('Starting verification for email:', email);
+        
         if (!email) {
             toast.error('Email not found. Please complete registration first.');
             return;
@@ -183,10 +185,20 @@ const BusinessSetupPage = () => {
             // First create identity session - this now returns the Stripe-hosted URL
             const identityResponse = await setupAPI.businessIdentity({ email });
             
-            if (identityResponse.msg === 'Invalid user') {
-                toast.error('User not found. Please complete registration first.');
-                setLoadingQR(false);
-                return;
+            console.log('Identity response:', identityResponse);
+            
+            if (identityResponse.msg) {
+                // Check for specific error messages
+                if (identityResponse.msg.includes('not found')) {
+                    toast.error('User not found. Please complete registration first.');
+                    setLoadingQR(false);
+                    return;
+                }
+                if (identityResponse.msg.includes('account type')) {
+                    toast.error('This page is for business accounts. Please use the correct setup page for your account type.');
+                    setLoadingQR(false);
+                    return;
+                }
             }
             
             if (!identityResponse.verification_url) {
