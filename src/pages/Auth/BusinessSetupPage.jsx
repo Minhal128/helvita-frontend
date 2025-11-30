@@ -187,18 +187,11 @@ const BusinessSetupPage = () => {
             
             console.log('Identity response:', identityResponse);
             
-            if (identityResponse.msg) {
-                // Check for specific error messages
-                if (identityResponse.msg.includes('not found')) {
-                    toast.error('User not found. Please complete registration first.');
-                    setLoadingQR(false);
-                    return;
-                }
-                if (identityResponse.msg.includes('account type')) {
-                    toast.error('This page is for business accounts. Please use the correct setup page for your account type.');
-                    setLoadingQR(false);
-                    return;
-                }
+            // Check for error messages
+            if (identityResponse.msg && identityResponse.msg.includes('not found')) {
+                toast.error('User not found. Please complete registration first.');
+                setLoadingQR(false);
+                return;
             }
             
             if (!identityResponse.verification_url) {
