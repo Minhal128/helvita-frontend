@@ -1,13 +1,85 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaBell, FaCreditCard, FaLock, FaTrashAlt } from 'react-icons/fa'
 import { HiDotsVertical } from 'react-icons/hi'
 import { IoShield } from 'react-icons/io5'
 import { LuLanguages } from 'react-icons/lu'
 import { MdEmail, MdPrivacyTip } from 'react-icons/md'
+import { authAPI } from '../../services/api'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 const SettingPage = () => {
+    const navigate = useNavigate()
     const [btns] = useState(["Account settings", "Payment & cards", "Preferences", "Security & privacy"])
     const [activeBtn, setActiveBtn] = useState(btns[0])
+    const [userProfile, setUserProfile] = useState(null)
+    const [cards, setCards] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [oldEmail, setOldEmail] = useState('')
+    const [newEmail, setNewEmail] = useState('')
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [deletePassword, setDeletePassword] = useState('')
+    const [deleting, setDeleting] = useState(false)
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    const fetchData = async () => {
+        try {
+            const profileRes = await authAPI.getProfile().catch(() => null)
+
+            if (profileRes && !profileRes.error) {
+                setUserProfile(profileRes)
+                // Use savedCards from profile response
+                if (profileRes.savedCards && profileRes.savedCards.length > 0) {
+                    setCards(profileRes.savedCards)
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleUpdateEmail = () => {
+        if (!oldEmail || !newEmail) {
+            toast.error('Please fill in both email fields')
+            return
+        }
+        // Here you would call API to update email
+        toast.success('Email update request sent!')
+        setOldEmail('')
+        setNewEmail('')
+    }
+
+    const handleDeleteAccount = async () => {
+        if (!deletePassword) {
+            toast.error('Please enter your password to confirm')
+            return
+        }
+        
+        setDeleting(true)
+        try {
+            const response = await authAPI.deleteAccount(deletePassword)
+            if (response.success) {
+                toast.success('Account deleted successfully')
+                localStorage.removeItem('token')
+                localStorage.removeItem('user')
+                navigate('/login')
+            } else {
+                toast.error(response.error || 'Failed to delete account')
+            }
+        } catch (error) {
+            console.error('Error deleting account:', error)
+            toast.error('Failed to delete account')
+        } finally {
+            setDeleting(false)
+            setShowDeleteModal(false)
+            setDeletePassword('')
+        }
+    }
 
     return (
         <div className="flex-1 overflow-x-auto  relative m-5 h-[100%]">
@@ -101,10 +173,13 @@ const SettingPage = () => {
                                                 <p className='text-[#525252]'>Privacy preference</p>
                                             </div>
                                         </div>
-                                        <div className='flex items-center gap-x-4 p-3'>
-                                            <div className='w-[2rem] h-[2rem] rounded-full bg-[#F4F4FF] text-blue flex justify-center items-center'><FaTrashAlt /></div>
+                                        <div 
+                                            onClick={() => setShowDeleteModal(true)}
+                                            className='flex items-center gap-x-4 p-3 cursor-pointer hover:bg-red-50 transition-colors'
+                                        >
+                                            <div className='w-[2rem] h-[2rem] rounded-full bg-red-100 text-red-500 flex justify-center items-center'><FaTrashAlt /></div>
                                             <div>
-                                                <p className='text-[#525252]'>Delete Account</p>
+                                                <p className='text-red-500 font-medium'>Delete Account</p>
                                             </div>
                                         </div>
                                     </div>
@@ -118,9 +193,26 @@ const SettingPage = () => {
                             {
                                 activeBtn === "Account settings" && (
                                     <div className='m-5'>
-                                        <input type="email" name="" id="" placeholder='Enter old email address' className='border border-[#DADADA] w-[100%] md:w-[20rem] px-3 py-2 h-[2.8rem] rounded-md text-sm' />
-                                        <input type="email" name="" id="" placeholder='Enter new email address' className='block border border-[#DADADA] mt-2 w-[100%] md:w-[20rem] px-3 py-2 h-[2.8rem] rounded-md text-sm' />
-                                        <button className='bg-blue text-white rounded-md px-9 py-2 mt-3'>Update</button>
+                                        <input 
+                                            type="email" 
+                                            value={oldEmail}
+                                            onChange={(e) => setOldEmail(e.target.value)}
+                                            placeholder={userProfile?.user?.email || 'Enter old email address'} 
+                                            className='border border-[#DADADA] w-[100%] md:w-[20rem] px-3 py-2 h-[2.8rem] rounded-md text-sm' 
+                                        />
+                                        <input 
+                                            type="email" 
+                                            value={newEmail}
+                                            onChange={(e) => setNewEmail(e.target.value)}
+                                            placeholder='Enter new email address' 
+                                            className='block border border-[#DADADA] mt-2 w-[100%] md:w-[20rem] px-3 py-2 h-[2.8rem] rounded-md text-sm' 
+                                        />
+                                        <button 
+                                            onClick={handleUpdateEmail}
+                                            className='bg-blue text-white rounded-md px-9 py-2 mt-3 hover:bg-blue/90'
+                                        >
+                                            Update
+                                        </button>
                                     </div>
                                 )
                             }
@@ -138,26 +230,44 @@ const SettingPage = () => {
                                                 </tr>
                                             </thead>
                                             <tbody className="bg-white border border-[#F4F6F9]">
-                                                {
-                                                    [1, 2, 3]?.map((i) => (
-                                                        <tr key={i} className='border border-[#F4F6F9]'>
+                                                {loading ? (
+                                                    <tr className='border border-[#F4F6F9]'>
+                                                        <td colSpan="4" className="px-6 py-4 text-center">Loading...</td>
+                                                    </tr>
+                                                ) : cards.length > 0 ? (
+                                                    cards.map((card, index) => (
+                                                        <tr key={card.id || index} className='border border-[#F4F6F9]'>
                                                             <td className="px-6 py-4 whitespace-nowrap">
                                                                 <div className="flex items-center">
-                                                                    <div className="flex-shrink-0 h-10 w-10">
-                                                                        <img className="h-10 w-10 rounded-full" src={`https://thumbs.dreamstime.com/b/portrait-handsome-smiling-young-man-folded-arms-smiling-joyful-cheerful-men-crossed-hands-isolated-studio-shot-172869765.jpg`} />
+                                                                    <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
+                                                                        {card.name?.charAt(0) || 'C'}
                                                                     </div>
                                                                     <div className="ml-4">
-                                                                        <div className="text-sm font-medium text-gray-900">Jessica Kimberly</div>
+                                                                        <div className="text-sm font-medium text-gray-900">
+                                                                            {card.name || userProfile?.profile?.fullName || 'Card Holder'}
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap "><div className="text-sm text-gray-900">Chase Bank</div></td>
-                                                            <td className="px-6 py-4 whitespace-nowrap "><div className="text-sm text-gray-900">1234 4567 8904</div></td>
-                                                            <td className="px-6 py-4 whitespace-nowrap "><div className="text-sm text-gray-900"><HiDotsVertical /></div></td>
-
+                                                            <td className="px-6 py-4 whitespace-nowrap ">
+                                                                <div className="text-sm text-gray-900">{card.subtype || card.type || 'Bank'}</div>
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap ">
+                                                                <div className="text-sm text-gray-900">•••• •••• •••• {card.mask || '****'}</div>
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap ">
+                                                                <div className="text-sm text-gray-900 cursor-pointer"><HiDotsVertical /></div>
+                                                            </td>
                                                         </tr>
                                                     ))
-                                                }
+                                                ) : (
+                                                    <tr className='border border-[#F4F6F9]'>
+                                                        <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
+                                                            <p>No cards linked</p>
+                                                            <p className="text-sm mt-1">Link a bank account to see your cards here</p>
+                                                        </td>
+                                                    </tr>
+                                                )}
                                             </tbody>
                                         </table>
                                     </div>
@@ -191,22 +301,18 @@ const SettingPage = () => {
                             {
                                 activeBtn === "Security & privacy" && (
                                     <div className='m-5 flex-1'>
-                                        <div className='flex justify-between items-center w-[100%]'>
-                                            <h1>English</h1>
-                                            <input defaultChecked type="radio" name="" id="" />
+                                        <div className='bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-4'>
+                                            <h3 className='text-yellow-800 font-medium mb-2'>⚠️ Warning</h3>
+                                            <p className='text-yellow-700 text-sm'>
+                                                Deleting your account is permanent. All your data, cards, and transaction history will be permanently removed.
+                                            </p>
                                         </div>
-                                        <div className='flex justify-between items-center w-[100%] mt-2'>
-                                            <h1>Francais</h1>
-                                            <input type="radio" name="" id="" />
-                                        </div>
-                                        <div className='flex justify-between items-center w-[100%] mt-2'>
-                                            <h1>Russian</h1>
-                                            <input type="radio" name="" id="" />
-                                        </div>
-                                        <div className='flex justify-between items-center w-[100%] mt-2'>
-                                            <h1>Polish</h1>
-                                            <input type="radio" name="" id="" />
-                                        </div>
+                                        <button 
+                                            onClick={() => setShowDeleteModal(true)}
+                                            className='bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition-colors'
+                                        >
+                                            Delete My Account
+                                        </button>
                                     </div>
                                 )
                             }
@@ -227,6 +333,46 @@ const SettingPage = () => {
 
 
             </div>
+
+            {/* Delete Account Modal */}
+            {showDeleteModal && (
+                <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
+                    <div className='bg-white rounded-lg p-6 w-[90%] max-w-md'>
+                        <h2 className='text-xl font-semibold text-gray-800 mb-4'>Delete Account</h2>
+                        <p className='text-gray-600 mb-4'>
+                            Are you sure you want to delete your account? This action cannot be undone.
+                        </p>
+                        <p className='text-sm text-gray-500 mb-4'>
+                            Please enter your password to confirm:
+                        </p>
+                        <input 
+                            type="password" 
+                            value={deletePassword}
+                            onChange={(e) => setDeletePassword(e.target.value)}
+                            placeholder='Enter your password'
+                            className='w-full border border-gray-300 rounded-md px-3 py-2 mb-4'
+                        />
+                        <div className='flex gap-3 justify-end'>
+                            <button 
+                                onClick={() => {
+                                    setShowDeleteModal(false)
+                                    setDeletePassword('')
+                                }}
+                                className='px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50'
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={handleDeleteAccount}
+                                disabled={deleting}
+                                className='px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:opacity-50'
+                            >
+                                {deleting ? 'Deleting...' : 'Delete Account'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
     )

@@ -50,13 +50,13 @@ export const navData = [
         icon: <FaFileInvoiceDollar />
     },
     {
-        id: 12,
+        id: 14,
         link: "referal",
         name: "Referal",
         icon: <GoCrossReference />
     },
     {
-        id: 13,
+        id: 15,
         link: "support",
         name: "Support",
         icon: <MdOutlineContactSupport />

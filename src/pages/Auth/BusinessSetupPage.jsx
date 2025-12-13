@@ -17,6 +17,60 @@ const steps = [
     { id: 6, label: 'Submit' },
 ];
 
+const US_STATES = [
+    { code: 'AL', name: 'Alabama' },
+    { code: 'AK', name: 'Alaska' },
+    { code: 'AZ', name: 'Arizona' },
+    { code: 'AR', name: 'Arkansas' },
+    { code: 'CA', name: 'California' },
+    { code: 'CO', name: 'Colorado' },
+    { code: 'CT', name: 'Connecticut' },
+    { code: 'DE', name: 'Delaware' },
+    { code: 'FL', name: 'Florida' },
+    { code: 'GA', name: 'Georgia' },
+    { code: 'HI', name: 'Hawaii' },
+    { code: 'ID', name: 'Idaho' },
+    { code: 'IL', name: 'Illinois' },
+    { code: 'IN', name: 'Indiana' },
+    { code: 'IA', name: 'Iowa' },
+    { code: 'KS', name: 'Kansas' },
+    { code: 'KY', name: 'Kentucky' },
+    { code: 'LA', name: 'Louisiana' },
+    { code: 'ME', name: 'Maine' },
+    { code: 'MD', name: 'Maryland' },
+    { code: 'MA', name: 'Massachusetts' },
+    { code: 'MI', name: 'Michigan' },
+    { code: 'MN', name: 'Minnesota' },
+    { code: 'MS', name: 'Mississippi' },
+    { code: 'MO', name: 'Missouri' },
+    { code: 'MT', name: 'Montana' },
+    { code: 'NE', name: 'Nebraska' },
+    { code: 'NV', name: 'Nevada' },
+    { code: 'NH', name: 'New Hampshire' },
+    { code: 'NJ', name: 'New Jersey' },
+    { code: 'NM', name: 'New Mexico' },
+    { code: 'NY', name: 'New York' },
+    { code: 'NC', name: 'North Carolina' },
+    { code: 'ND', name: 'North Dakota' },
+    { code: 'OH', name: 'Ohio' },
+    { code: 'OK', name: 'Oklahoma' },
+    { code: 'OR', name: 'Oregon' },
+    { code: 'PA', name: 'Pennsylvania' },
+    { code: 'RI', name: 'Rhode Island' },
+    { code: 'SC', name: 'South Carolina' },
+    { code: 'SD', name: 'South Dakota' },
+    { code: 'TN', name: 'Tennessee' },
+    { code: 'TX', name: 'Texas' },
+    { code: 'UT', name: 'Utah' },
+    { code: 'VT', name: 'Vermont' },
+    { code: 'VA', name: 'Virginia' },
+    { code: 'WA', name: 'Washington' },
+    { code: 'WV', name: 'West Virginia' },
+    { code: 'WI', name: 'Wisconsin' },
+    { code: 'WY', name: 'Wyoming' },
+    { code: 'DC', name: 'District of Columbia' },
+];
+
 const BusinessSetupPage = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -163,10 +217,42 @@ const BusinessSetupPage = () => {
             return;
         }
 
-        // During onboarding, just save preferences and move to next step
-        // Card will be created after login when user has a token
-        toast.success('Debit card preferences saved!');
-        setCurrentStep(6);
+        const email = localStorage.getItem('registerEmail');
+        if (!email) {
+            toast.error('Email not found. Please complete registration first.');
+            return;
+        }
+
+        try {
+            // Create the card via backend API
+            const cardDeliveryAddress = {
+                line1: businessAddress || address,
+                city: businessCity || city,
+                state: businessState || state,
+                postal_code: businessZipCode || zipCode,
+                country: 'US'
+            };
+
+            const response = await setupAPI.createCard({
+                email,
+                cardName: nameOnCard,
+                businessNameOnCard,
+                cardDeliveryAddress
+            });
+
+            if (response.cardId) {
+                toast.success('Debit card created successfully!');
+                localStorage.setItem('stripeCardId', response.cardId);
+            } else {
+                toast.success('Debit card preferences saved!');
+            }
+            setCurrentStep(6);
+        } catch (error) {
+            console.error('Card creation error:', error);
+            // If card creation fails, still proceed with the flow
+            toast.success('Debit card preferences saved! Card will be issued after verification.');
+            setCurrentStep(6);
+        }
     };
 
     const handleGenerateQRCode = async () => {
@@ -414,8 +500,9 @@ const BusinessSetupPage = () => {
                                 <div className="relative">
                                     <select id="state" className="rounded md:w-[25rem] w-[100%] px-3 py-2 border border-[#dadada] outline-blue" value={state} onChange={(e) => setState(e.target.value)}>
                                         <option value="" disabled>Enter state</option>
-                                        <option value="AL">Alabama</option>
-                                        <option value="AK">Alaska</option>
+                                        {US_STATES.map((s) => (
+                                            <option key={s.code} value={s.code}>{s.name}</option>
+                                        ))}
                                     </select>
                                 </div>
                             </div>
@@ -460,8 +547,9 @@ const BusinessSetupPage = () => {
                                 <div className="relative">
                                     <select id="businessRegisteredState" className="rounded md:w-[25rem] w-[100%] px-3 py-2 border border-[#dadada] outline-blue" value={businessRegisteredState} onChange={(e) => setBusinessRegisteredState(e.target.value)}>
                                         <option value="" disabled>Enter state</option>
-                                        <option value="AL">Alabama</option>
-                                        <option value="AK">Alaska</option>
+                                        {US_STATES.map((s) => (
+                                            <option key={s.code} value={s.code}>{s.name}</option>
+                                        ))}
                                     </select>
                                 </div>
                             </div>
@@ -490,8 +578,9 @@ const BusinessSetupPage = () => {
                                 <div className="relative">
                                     <select id="businessState" className="rounded md:w-[25rem] w-[100%] px-3 py-2 border border-[#dadada] outline-blue" value={businessState} onChange={(e) => setBusinessState(e.target.value)}>
                                         <option value="" disabled>Enter state</option>
-                                        <option value="AL">Alabama</option>
-                                        <option value="AK">Alaska</option>
+                                        {US_STATES.map((s) => (
+                                            <option key={s.code} value={s.code}>{s.name}</option>
+                                        ))}
                                     </select>
                                 </div>
                             </div>

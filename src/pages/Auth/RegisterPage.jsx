@@ -1,7 +1,7 @@
 import Logo from '../../assets/logo.svg'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Bg from '../../assets/auth/cover.svg'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { authAPI } from '../../services/api';
 
@@ -11,6 +11,14 @@ const RegisterPage = () => {
   const [accountType, setAccountType] = useState('personal');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const referralCode = searchParams.get('ref');
+
+  useEffect(() => {
+    if (referralCode) {
+      console.log('Registering with referral code:', referralCode);
+    }
+  }, [referralCode]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -21,7 +29,7 @@ const RegisterPage = () => {
 
     setLoading(true);
     try {
-      const response = await authAPI.register(email, password, accountType);
+      const response = await authAPI.register(email, password, accountType, referralCode);
       if (response.success || response.message) {
         toast.success('Registration successful! Check your email for OTP.');
         localStorage.setItem('registerEmail', email);

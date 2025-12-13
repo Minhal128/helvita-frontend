@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://helvitabackend.vercel.app/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');
@@ -10,11 +10,13 @@ const getHeaders = () => {
 
 // Auth APIs
 export const authAPI = {
-  register: async (email, password, accountType) => {
+  register: async (email, password, accountType, referralCode = null) => {
+    const body = { email, password, accountType };
+    if (referralCode) body.referralCode = referralCode;
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ email, password, accountType }),
+      body: JSON.stringify(body),
     });
     return response.json();
   },
@@ -33,6 +35,31 @@ export const authAPI = {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ email, password }),
+    });
+    return response.json();
+  },
+
+  getProfile: async () => {
+    const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  getReferrals: async () => {
+    const response = await fetch(`${API_BASE_URL}/auth/referrals`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  deleteAccount: async (password = null) => {
+    const response = await fetch(`${API_BASE_URL}/auth/delete-account`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+      body: JSON.stringify({ password }),
     });
     return response.json();
   },
@@ -239,6 +266,171 @@ export const setupAPI = {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ email }),
+    });
+    return response.json();
+  },
+};
+
+// Plaid APIs
+export const plaidAPI = {
+  createLinkToken: async () => {
+    const response = await fetch(`${API_BASE_URL}/plaid/create-link-token`, {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  exchangePublicToken: async (publicToken) => {
+    const response = await fetch(`${API_BASE_URL}/plaid/exchange-public-token`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ publicToken }),
+    });
+    return response.json();
+  },
+
+  getTransactions: async (startDate, endDate) => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    const response = await fetch(`${API_BASE_URL}/plaid/transactions?${params}`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  getAccounts: async () => {
+    const response = await fetch(`${API_BASE_URL}/plaid/accounts`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  getTransactionSummary: async () => {
+    const response = await fetch(`${API_BASE_URL}/plaid/transaction-summary`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  getCardDetails: async () => {
+    const response = await fetch(`${API_BASE_URL}/plaid/card-details`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  getReserves: async () => {
+    const response = await fetch(`${API_BASE_URL}/plaid/reserves`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  initiateTransfer: async (accountNumber, amount, description = '') => {
+    const response = await fetch(`${API_BASE_URL}/plaid/transfer`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ accountNumber, amount, description }),
+    });
+    return response.json();
+  },
+};
+
+// Card APIs
+export const cardAPI = {
+  addCard: async (cardData) => {
+    const response = await fetch(`${API_BASE_URL}/card/add`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(cardData),
+    });
+    return response.json();
+  },
+
+  blockCard: async () => {
+    const response = await fetch(`${API_BASE_URL}/card/block`, {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  changePin: async () => {
+    const response = await fetch(`${API_BASE_URL}/card/change-pin`, {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  requestCard: async (data) => {
+    const response = await fetch(`${API_BASE_URL}/card/request`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
+
+  createInvoice: async (amount, description) => {
+    const response = await fetch(`${API_BASE_URL}/card/invoice`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ amount, description }),
+    });
+    return response.json();
+  },
+
+  listInvoices: async () => {
+    const response = await fetch(`${API_BASE_URL}/card/invoices`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  makePayment: async (amount, paymentMethodId) => {
+    const response = await fetch(`${API_BASE_URL}/card/payment`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ amount, paymentMethodId }),
+    });
+    return response.json();
+  },
+};
+
+// Support APIs
+export const supportAPI = {
+  sendMessage: async (message) => {
+    const response = await fetch(`${API_BASE_URL}/support/message`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ message }),
+    });
+    return response.json();
+  },
+
+  sendNotification: async (data) => {
+    const response = await fetch(`${API_BASE_URL}/support/notification`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
+
+  sendReferralInvites: async (emails) => {
+    const response = await fetch(`${API_BASE_URL}/support/referral-invite`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ emails }),
     });
     return response.json();
   },

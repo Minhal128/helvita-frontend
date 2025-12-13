@@ -21,6 +21,7 @@ import ReferalPage from './pages/Dashboard/ReferalPage';
 import DashboardSupportPage from './pages/Dashboard/SupportPage';
 import NotificationPage from './pages/Dashboard/NotificationPage';
 import SettingPage from './pages/Dashboard/SettingPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const RegisterPage = lazy(() => import('./pages/Auth/RegisterPage'));
 const Layout = lazy(() => import('./components/dashboard/Layout'));
@@ -68,7 +69,7 @@ function App() {
             <Route path='/register' element={<RegisterPage />} />
 
             
-            <Route path="/dashboard/" element={<Layout />}>
+            <Route path="/dashboard/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
               <Route path="home" element={<HomePage />} />
               <Route path="transaction" element={<TransactionPage />} />
               <Route path="account" element={<AccountPage />} />

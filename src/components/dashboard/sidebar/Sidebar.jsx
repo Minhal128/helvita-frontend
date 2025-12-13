@@ -10,7 +10,6 @@ import { useTheme } from '../../../context/ThemeContext';
 const Sidebar = () => {
   const { theme } = useTheme();
   const location = useLocation().pathname.split("/")[2];
-  console.log(location)
   const { isNavOpen, toggleNav } = useSidebar();
   const sidebarRef = useRef(null);
   const nav = useNavigate()

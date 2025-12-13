@@ -22,6 +22,15 @@ const LoginPage = () => {
         try {
             const response = await authAPI.login(email, password);
             if (response.token) {
+                // Clear any old user data first
+                localStorage.removeItem('token');
+                localStorage.removeItem('accountId');
+                localStorage.removeItem('user');
+                localStorage.removeItem('registerEmail');
+                localStorage.removeItem('accountType');
+                localStorage.removeItem('password');
+                
+                // Set new user data
                 localStorage.setItem('token', response.token);
                 localStorage.setItem('accountId', response.accountId || '');
                 toast.success('Login successful!');

@@ -3,6 +3,8 @@ import { IoIosAlert, IoIosCard } from "react-icons/io";
 import { SiAdguard } from "react-icons/si";
 import { BiSolidBarChartAlt2 } from "react-icons/bi";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { supportAPI } from '../../services/api';
+import toast from 'react-hot-toast';
 
 const faqs = [
     {
@@ -30,10 +32,36 @@ const SupportPage = () => {
 
     const [activeBtn, setActiveBtn] = useState("faq")
     const [openFAQIndex, setOpenFAQIndex] = useState(null);
-
+    const [message, setMessage] = useState('');
+    const [sending, setSending] = useState(false);
 
     const toggleFAQ = (index) => {
         setOpenFAQIndex((prevIndex) => (prevIndex === index ? null : index));
+    };
+
+    const handleSendMessage = async () => {
+        if (!message.trim()) {
+            toast.error('Please enter a message');
+            return;
+        }
+
+        try {
+            setSending(true);
+            const response = await supportAPI.sendMessage(message);
+            
+            if (response.error) {
+                toast.error(response.error);
+                return;
+            }
+            
+            toast.success('Message sent successfully! Our team will respond soon.');
+            setMessage('');
+        } catch (error) {
+            console.error('Error sending message:', error);
+            toast.error('Failed to send message');
+        } finally {
+            setSending(false);
+        }
     };
 
 
@@ -105,8 +133,19 @@ const SupportPage = () => {
                                 </div>
 
                                 <div className='mt-5'>
-                                    <textarea name="" id="" placeholder='Message' className='resize-none w-[100%] border border-[#DADADA] px-3 py-2 h-[10rem] outline-none rounded-md'/>
-                                    <button className=' bg-blue text-white rounded-md px-5 py-2 text-sm mt-4'>Send Message</button>
+                                    <textarea 
+                                        placeholder='Type your message here...' 
+                                        value={message}
+                                        onChange={(e) => setMessage(e.target.value)}
+                                        className='resize-none w-[100%] border border-[#DADADA] px-3 py-2 h-[10rem] outline-none rounded-md'
+                                    />
+                                    <button 
+                                        onClick={handleSendMessage}
+                                        disabled={sending}
+                                        className='bg-blue text-white rounded-md px-5 py-2 text-sm mt-4 disabled:opacity-50 disabled:cursor-not-allowed'
+                                    >
+                                        {sending ? 'Sending...' : 'Send Message'}
+                                    </button>
                                 </div>
 
                             </div>
