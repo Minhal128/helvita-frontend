@@ -45,6 +45,10 @@ const HomePage = () => {
   const [isLinked, setIsLinked] = useState(false);
   const [linkingAccount, setLinkingAccount] = useState(false);
 
+  // Expense data state
+  const [expenseData, setExpenseData] = useState([]);
+  const [totalExpense, setTotalExpense] = useState(0);
+
   // Fetch dashboard data on mount
   useEffect(() => {
     fetchDashboardData();
@@ -200,6 +204,11 @@ const HomePage = () => {
       if (summaryRes.transactions && summaryRes.transactions.length > 0) {
         const monthlyData = processMonthlyData(summaryRes.transactions);
         setActivityData(monthlyData);
+        
+        // Process expense data (only expenses, not income)
+        const expenseMonthlyData = processExpenseData(summaryRes.transactions);
+        setExpenseData(expenseMonthlyData.data);
+        setTotalExpense(expenseMonthlyData.total);
       }
 
     } catch (error) {
@@ -226,6 +235,40 @@ const HomePage = () => {
     });
     
     return months.map(month => Math.round(monthlyTotals[month] * 100) / 100);
+  };
+
+  // Process expense transactions (only positive amounts which are debits/expenses in Plaid)
+  const processExpenseData = (transactions) => {
+    const monthlyExpenses = {};
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    // Initialize all months with 0
+    months.forEach(month => { monthlyExpenses[month] = 0; });
+    
+    let totalExpenses = 0;
+    
+    // Sum only expense transactions (positive amounts in Plaid are debits)
+    transactions.forEach(t => {
+      if (t.amount > 0) { // Positive = expense/debit
+        const date = new Date(t.date);
+        const month = months[date.getMonth()];
+        monthlyExpenses[month] += t.amount;
+        totalExpenses += t.amount;
+      }
+    });
+    
+    // Get last 5 months for display
+    const currentMonth = new Date().getMonth();
+    const last5Months = [];
+    for (let i = 4; i >= 0; i--) {
+      const monthIndex = (currentMonth - i + 12) % 12;
+      last5Months.push({
+        month: months[monthIndex],
+        amount: Math.round(monthlyExpenses[months[monthIndex]] * 100) / 100
+      });
+    }
+    
+    return { data: last5Months, total: Math.round(totalExpenses * 100) / 100 };
   };
 
   // Format currency
@@ -454,7 +497,36 @@ const HomePage = () => {
 
         <div className='flex-1 min-w-[20rem] w-[100%] bg-white rounded-xl p-5'>
           <p className='text-[#2A2F47]'>My expense</p>
-          <div className='flex justify-center items-center'><img src={GraphImage} alt="" className='h-[12.5rem]' /></div>
+          <div className='flex items-center gap-2 mt-2'>
+            <div className='w-8 h-8 rounded-full bg-[#2A2F47] flex items-center justify-center'>
+              <span className='text-white text-xs'>💰</span>
+            </div>
+            <span className='text-lg font-semibold'>{formatCurrency(totalExpense)}</span>
+          </div>
+          <div className='flex justify-center items-end gap-2 mt-4 h-[10rem]'>
+            {expenseData.length > 0 ? (
+              expenseData.map((item, index) => {
+                const maxAmount = Math.max(...expenseData.map(d => d.amount), 1);
+                const heightPercent = (item.amount / maxAmount) * 100;
+                const isCurrentMonth = index === expenseData.length - 1;
+                return (
+                  <div key={item.month} className='flex flex-col items-center gap-1'>
+                    <div 
+                      className={`w-8 rounded-t-md ${isCurrentMonth ? 'bg-blue' : 'bg-[#E8EAED]'}`}
+                      style={{ height: `${Math.max(heightPercent, 5)}%` }}
+                      title={formatCurrency(item.amount)}
+                    ></div>
+                    <span className='text-xs text-gray-500'>{item.month}</span>
+                  </div>
+                );
+              })
+            ) : (
+              <div className='flex flex-col items-center justify-center h-full text-gray-400'>
+                <p>No expense data</p>
+                <p className='text-xs'>Link a bank to see expenses</p>
+              </div>
+            )}
+          </div>
         </div>
 
 

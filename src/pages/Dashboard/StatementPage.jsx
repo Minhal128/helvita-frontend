@@ -30,19 +30,27 @@ const StatementPage = () => {
         try {
             setLoading(true);
             const [profileRes, reserveRes, transRes] = await Promise.all([
-                authAPI.getProfile().catch(() => ({ profile: {} })),
+                authAPI.getProfile().catch(() => ({ user: {}, profile: {} })),
                 plaidAPI.getReserves().catch(() => ({ totalReserves: 0, accounts: [] })),
                 plaidAPI.getTransactions().catch(() => ({ transactions: [] }))
             ]);
 
-            // Set account holder info
-            const profile = profileRes.profile || profileRes;
+            // Set account holder info - use cardHolderName from user, or fullName from profile
+            const user = profileRes?.user || {};
+            const profile = profileRes?.profile || {};
+            const holderName = user.cardHolderName || 
+                              profile.fullName || 
+                              profile.nameOnCard ||
+                              user.businessNameOnCard ||
+                              user.email?.split('@')[0] || 
+                              'N/A';
+            
             setAccountData({
-                holder: profile?.fullName || `${profile?.firstName || ''} ${profile?.lastName || ''}`.trim() || 'N/A',
+                holder: holderName,
                 accountNumber: reserveRes?.accounts?.[0]?.mask ? 
                     `****-****-${reserveRes.accounts[0].mask}` : '****-****-**',
-                type: reserveRes?.accounts?.[0]?.type || 'Checking',
-                currency: reserveRes?.currency || 'USD'
+                type: reserveRes?.accounts?.[0]?.subtype || reserveRes?.accounts?.[0]?.type || 'Checking',
+                currency: reserveRes?.accounts?.[0]?.currency || reserveRes?.currency || 'USD'
             });
 
             // Set balance

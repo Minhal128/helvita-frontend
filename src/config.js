@@ -1,6 +1,6 @@
 
 const config = {
-    baseUrl:"http://localhost:5000/api",
+    baseUrl: import.meta.env.VITE_API_URL || "https://helvitabackend.vercel.app/api",
 }
 
 export default config

@@ -29,15 +29,22 @@ const AccountPage = () => {
                 plaidAPI.getTransactions().catch(() => ({ transactions: [] }))
             ]);
 
-            // Set account holder info from profile
+            // Set account holder info from profile - check multiple fields
             const profile = profileRes.profile || {};
             const user = profileRes.user || {};
+            const holderName = user.cardHolderName || 
+                              profile.fullName || 
+                              profile.nameOnCard ||
+                              user.businessNameOnCard ||
+                              user.email?.split('@')[0] || 
+                              'N/A';
+            
             setAccountData({
-                holder: profile?.fullName || user?.cardHolderName || user?.email?.split('@')[0] || 'N/A',
+                holder: holderName,
                 accountNumber: reserveRes.accounts?.[0]?.mask ? 
                     `****-****-${reserveRes.accounts[0].mask}` : '****-****-**',
-                type: reserveRes.accounts?.[0]?.type || 'Checking',
-                currency: 'USD'
+                type: reserveRes.accounts?.[0]?.subtype || reserveRes.accounts?.[0]?.type || 'Checking',
+                currency: reserveRes.accounts?.[0]?.currency || 'USD'
             });
 
             // Set balance
