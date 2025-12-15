@@ -16,19 +16,51 @@ const TransactionPage = () => {
     const fetchTransactions = async () => {
         setLoading(true);
         try {
-            const response = await plaidAPI.getTransactions();
-            if (response.transactions && response.transactions.length > 0) {
-                const formattedTransactions = response.transactions.map((t, index) => ({
+            // Fetch both Plaid transactions and our Stripe transfers
+            const [plaidResponse, transfersResponse] = await Promise.all([
+                plaidAPI.getTransactions(),
+                plaidAPI.getTransfers()
+            ]);
+
+            let allTransactions = [];
+
+            // Format Plaid transactions
+            if (plaidResponse.transactions && plaidResponse.transactions.length > 0) {
+                const formattedPlaidTransactions = plaidResponse.transactions.map((t, index) => ({
                     description: t.merchant_name || t.name || 'Transaction',
                     transactionId: `#${t.transaction_id?.slice(0, 10) || index}`,
                     type: t.amount > 0 ? 'Transfer' : 'Deposit',
                     card: t.account_id ? `****${t.account_id.slice(-4)}` : '****',
                     date: new Date(t.date).toLocaleDateString('en-US'),
+                    rawDate: new Date(t.date),
                     amount: t.amount < 0 ? `$${Math.abs(t.amount).toFixed(2)}` : `-$${t.amount.toFixed(2)}`,
-                    isExpense: t.amount > 0
+                    isExpense: t.amount > 0,
+                    source: 'plaid'
                 }));
-                setTransactions(formattedTransactions);
+                allTransactions = [...allTransactions, ...formattedPlaidTransactions];
             }
+
+            // Format our Stripe transfers
+            if (transfersResponse.transfers && transfersResponse.transfers.length > 0) {
+                const formattedTransfers = transfersResponse.transfers.map((t) => ({
+                    description: `Helvita Transfer to ${t.destination || 'Bank Account'}`,
+                    transactionId: `#${t.id?.slice(0, 10) || t.stripePaymentIntentId?.slice(0, 10) || 'N/A'}`,
+                    type: 'Transfer',
+                    card: '****Helvita',
+                    date: new Date(t.createdAt).toLocaleDateString('en-US'),
+                    rawDate: new Date(t.createdAt),
+                    amount: `-$${Number(t.amount).toFixed(2)}`,
+                    isExpense: true,
+                    source: 'helvita',
+                    status: t.status
+                }));
+                allTransactions = [...allTransactions, ...formattedTransfers];
+            }
+
+            // Sort by date (newest first)
+            allTransactions.sort((a, b) => b.rawDate - a.rawDate);
+
+            setTransactions(allTransactions);
         } catch (error) {
             console.error('Error fetching transactions:', error);
         } finally {

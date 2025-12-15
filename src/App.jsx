@@ -6,6 +6,8 @@ import { Toaster } from 'react-hot-toast';
 import LoaderGif from './assets/loader.gif';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/Auth/LoginPage';
+import ForgotPasswordPage from './pages/Auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/Auth/ResetPasswordPage';
 import SolutionPage from './pages/SolutionPage';
 import SupportPage from './pages/SupportPage';
 import BusinessSetupPage from './pages/Auth/BusinessSetupPage';
@@ -66,6 +68,8 @@ function App() {
 
 
             <Route path='/login' element={<LoginPage />} />
+            <Route path='/forgot-password' element={<ForgotPasswordPage />} />
+            <Route path='/reset-password' element={<ResetPasswordPage />} />
             <Route path='/register' element={<RegisterPage />} />
 
             

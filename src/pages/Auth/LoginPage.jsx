@@ -87,7 +87,7 @@ const LoginPage = () => {
                         </button>
                     </form>
 
-                    <button className='mt-3 text-blue'>Forgot Password</button>
+                    <Link to="/forgot-password" className='mt-3 text-blue'>Forgot Password</Link>
                     <button className='mt-3 text-gray'>Don't have an account ? <Link to={"/register"} className='text-blue'>Signup</Link></button>
                 </div>
             </div>

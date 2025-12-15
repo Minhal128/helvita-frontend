@@ -39,6 +39,33 @@ export const authAPI = {
     return response.json();
   },
 
+  forgotPassword: async (email) => {
+    const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ email }),
+    });
+    return response.json();
+  },
+
+  verifyResetOtp: async (email, otp) => {
+    const response = await fetch(`${API_BASE_URL}/auth/verify-reset-otp`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ email, otp }),
+    });
+    return response.json();
+  },
+
+  resetPassword: async (email, otp, newPassword) => {
+    const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ email, otp, newPassword }),
+    });
+    return response.json();
+  },
+
   getProfile: async () => {
     const response = await fetch(`${API_BASE_URL}/auth/profile`, {
       method: 'GET',
@@ -338,6 +365,31 @@ export const plaidAPI = {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ accountNumber, amount, description }),
+    });
+    return response.json();
+  },
+
+  quickTransfer: async (amount, saveAsDraft = false) => {
+    const response = await fetch(`${API_BASE_URL}/plaid/quick-transfer`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ amount, saveAsDraft }),
+    });
+    return response.json();
+  },
+
+  unlinkAccount: async () => {
+    const response = await fetch(`${API_BASE_URL}/plaid/unlink`, {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  getTransfers: async () => {
+    const response = await fetch(`${API_BASE_URL}/plaid/transfers`, {
+      method: 'GET',
+      headers: getHeaders(),
     });
     return response.json();
   },

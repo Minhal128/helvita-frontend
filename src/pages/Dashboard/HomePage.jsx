@@ -44,6 +44,7 @@ const HomePage = () => {
   const [linkToken, setLinkToken] = useState(null);
   const [isLinked, setIsLinked] = useState(false);
   const [linkingAccount, setLinkingAccount] = useState(false);
+  const [unlinkingAccount, setUnlinkingAccount] = useState(false);
 
   // Expense data state
   const [expenseData, setExpenseData] = useState([]);
@@ -311,15 +312,54 @@ const HomePage = () => {
       toast.error('Please enter an amount');
       return;
     }
+
+    if (!isLinked || !reserves.accounts?.length) {
+      toast.error('Please link a bank account first');
+      return;
+    }
     
     setSendingTransfer(true);
     try {
-      // For now, show a message that this feature requires selecting a contact
-      toast.error('Please select a contact first');
+      const response = await plaidAPI.quickTransfer(parseFloat(quickTransferAmount));
+      if (response && response.success) {
+        toast.success(`Transfer of $${quickTransferAmount} initiated successfully!`);
+        setQuickTransferAmount('');
+        fetchDashboardData(); // Refresh data
+      } else {
+        toast.error(response.error || 'Transfer failed');
+      }
     } catch (error) {
-      toast.error('Transfer failed');
+      toast.error('Transfer failed: ' + error.message);
     } finally {
       setSendingTransfer(false);
+    }
+  };
+
+  // Handle unlink bank account
+  const handleUnlinkAccount = async () => {
+    if (!confirm('Are you sure you want to unlink your bank account?')) {
+      return;
+    }
+
+    setUnlinkingAccount(true);
+    try {
+      const response = await plaidAPI.unlinkAccount();
+      if (response && response.success) {
+        toast.success('Bank account unlinked successfully!');
+        setIsLinked(false);
+        setReserves({ totalReserves: 0, accounts: [] });
+        setTransactions([]);
+        setExpenseData([]);
+        setTotalExpense(0);
+        setActivityData([]);
+        generateLinkToken(); // Generate new link token for re-linking
+      } else {
+        toast.error(response.error || 'Failed to unlink account');
+      }
+    } catch (error) {
+      toast.error('Failed to unlink account');
+    } finally {
+      setUnlinkingAccount(false);
     }
   };
 
@@ -629,6 +669,17 @@ const HomePage = () => {
             >
               <FaLink />
               {linkingAccount ? 'Linking...' : 'Link Bank Account'}
+            </button>
+          )}
+
+          {/* Unlink Bank Account Button */}
+          {isLinked && reserves.accounts?.length > 0 && (
+            <button
+              onClick={handleUnlinkAccount}
+              disabled={unlinkingAccount}
+              className='w-full mt-3 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2'
+            >
+              {unlinkingAccount ? 'Unlinking...' : 'Unlink Bank Account'}
             </button>
           )}
 
