@@ -4,7 +4,7 @@ const getHeaders = () => {
   const token = localStorage.getItem('token');
   return {
     'Content-Type': 'application/json',
-    ...(token && { 'Authorization': `Bearer ${token}` }),
+    ...(token && { Authorization: `Bearer ${token}` }),
   };
 };
 
@@ -62,6 +62,15 @@ export const authAPI = {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ email, otp, newPassword }),
+    });
+    return response.json();
+  },
+
+  googleLogin: async (credential) => {
+    const response = await fetch(`${API_BASE_URL}/auth/google-login`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ credential }),
     });
     return response.json();
   },
@@ -197,19 +206,25 @@ export const adminAPI = {
   },
 
   approveUser: async (userId) => {
-    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/approve`, {
-      method: 'POST',
-      headers: getHeaders(),
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/admin/users/${userId}/approve`,
+      {
+        method: 'POST',
+        headers: getHeaders(),
+      },
+    );
     return response.json();
   },
 
   rejectUser: async (userId, reason) => {
-    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}/reject`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ reason }),
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/admin/users/${userId}/reject`,
+      {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ reason }),
+      },
+    );
     return response.json();
   },
 };
@@ -280,11 +295,14 @@ export const setupAPI = {
   },
 
   verifyDocumentStatus: async (email, verificationSessionId) => {
-    const response = await fetch(`${API_BASE_URL}/setup/verify-document-status`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ email, verificationSessionId }),
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/setup/verify-document-status`,
+      {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ email, verificationSessionId }),
+      },
+    );
     return response.json();
   },
 
@@ -309,11 +327,14 @@ export const plaidAPI = {
   },
 
   exchangePublicToken: async (publicToken) => {
-    const response = await fetch(`${API_BASE_URL}/plaid/exchange-public-token`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ publicToken }),
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/plaid/exchange-public-token`,
+      {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ publicToken }),
+      },
+    );
     return response.json();
   },
 
@@ -321,10 +342,13 @@ export const plaidAPI = {
     const params = new URLSearchParams();
     if (startDate) params.append('startDate', startDate);
     if (endDate) params.append('endDate', endDate);
-    const response = await fetch(`${API_BASE_URL}/plaid/transactions?${params}`, {
-      method: 'GET',
-      headers: getHeaders(),
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/plaid/transactions?${params}`,
+      {
+        method: 'GET',
+        headers: getHeaders(),
+      },
+    );
     return response.json();
   },
 
