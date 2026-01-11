@@ -10,12 +10,12 @@ const Layout = () => {
 
   return (
 
-    <div className={`flex items-start bg-[#ffff] w-screen h-screen`}>
+    <div className={`flex items-start bg-[#ffff] w-screen h-screen overflow-hidden`}>
       <Sidebar />
 
-      <div className='flex-1 h-[100vh] overflow-auto bg-[#F4F6F9]'>
+      <div className='flex-1 h-[100vh] overflow-auto bg-[#F4F6F9] w-full min-w-0'>
         <Header location={location} />
-        <div className='flex-1 overflow-x-auto overflow-y-auto h-[90%]'>
+        <div className='flex-1 overflow-x-auto overflow-y-auto h-[calc(100vh-5rem)] pb-4'>
           <Outlet />
         </div>
       </div>

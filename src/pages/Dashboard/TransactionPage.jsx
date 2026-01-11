@@ -77,41 +77,41 @@ const TransactionPage = () => {
 
     if (loading) {
         return (
-            <div className='flex-1 flex items-center justify-center m-5 bg-white rounded-lg p-5'>
+            <div className='flex-1 flex items-center justify-center m-2.5 sm:m-5 bg-white rounded-lg p-3 sm:p-5'>
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue mx-auto mb-4"></div>
-                    <p className="text-gray">Loading transactions...</p>
+                    <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue mx-auto mb-4"></div>
+                    <p className="text-gray text-sm sm:text-base">Loading transactions...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className='flex-1 overflow-x-auto relative m-5 bg-white rounded-lg p-5'>
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-2">
+        <div className='flex-1 overflow-x-auto relative m-2.5 sm:m-5 bg-white rounded-lg p-3 sm:p-5'>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+                <div className="flex items-center flex-wrap gap-1 sm:gap-2">
                     <button 
                         onClick={() => setFilter('all')}
-                        className={`${filter === 'all' ? 'bg-blue text-white' : 'text-gray-700'} rounded-md px-3 py-2 text-sm font-medium focus:outline-none`}
+                        className={`${filter === 'all' ? 'bg-blue text-white' : 'text-gray-700 bg-gray-50'} rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium focus:outline-none`}
                     >
-                        <span className="flex items-center"><svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 mr-1"><path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12 6.75a.75.75 0 01.75.75v4.5h4.5a.75.75 0 010 1.5h-4.5v4.5a.75.75 0 01-1.5 0v-4.5h-4.5a.75.75 0 010-1.5h4.5v-4.5a.75.75 0 01.75-.75z" clipRule="evenodd" /></svg>All ({transactions.length})</span>
+                        <span className="flex items-center"><svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 sm:w-4 sm:h-4 mr-1"><path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12 6.75a.75.75 0 01.75.75v4.5h4.5a.75.75 0 010 1.5h-4.5v4.5a.75.75 0 01-1.5 0v-4.5h-4.5a.75.75 0 010-1.5h4.5v-4.5a.75.75 0 01.75-.75z" clipRule="evenodd" /></svg>All ({transactions.length})</span>
                     </button>
                     <button 
                         onClick={() => setFilter('deposit')}
-                        className={`${filter === 'deposit' ? 'bg-green-500 text-white' : 'text-gray-700'} rounded-md px-3 py-2 text-sm font-medium focus:outline-none`}
+                        className={`${filter === 'deposit' ? 'bg-green-500 text-white' : 'text-gray-700 bg-gray-50'} rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium focus:outline-none`}
                     >
-                        <span className="flex items-center"><LuCircleChevronUp className="w-4 h-4 mr-1 text-green-500" />Deposit</span>
+                        <span className="flex items-center"><LuCircleChevronUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-green-500" />Deposit</span>
                     </button>
                     <button 
                         onClick={() => setFilter('transfer')}
-                        className={`${filter === 'transfer' ? 'bg-red-500 text-white' : 'text-gray-700'} rounded-md px-3 py-2 text-sm font-medium focus:outline-none`}
+                        className={`${filter === 'transfer' ? 'bg-red-500 text-white' : 'text-gray-700 bg-gray-50'} rounded-md px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium focus:outline-none`}
                     >
-                        <span className="flex items-center"><LuCircleChevronDown className="w-4 h-4 mr-1 text-red-500" />Transfer</span>
+                        <span className="flex items-center"><LuCircleChevronDown className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-red-500" />Transfer</span>
                     </button>
                 </div>
-                <div className="flex items-center bg-[#F4F6F9] px-3 py-2 rounded-md text-gray-600 text-sm">
+                <div className="flex items-center bg-[#F4F6F9] px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-gray-600 text-xs sm:text-sm">
                     <p className='mr-2'>{new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
-                    <FaCalendar className="ml-1 w-4 h-4 text-blue" />
+                    <FaCalendar className="ml-1 w-3 h-3 sm:w-4 sm:h-4 text-blue" />
                 </div>
             </div>
             <div className="overflow-x-auto">
@@ -121,7 +121,37 @@ const TransactionPage = () => {
                         <p className="text-sm mt-2">Link a bank account to see transactions</p>
                     </div>
                 ) : (
-                <table className="min-w-full divide-y divide-[#F4F6F9]">
+                <>
+                {/* Mobile Card View */}
+                <div className="sm:hidden space-y-3">
+                    {filteredTransactions.map((transaction, index) => (
+                        <div key={index} className="bg-gray-50 rounded-lg p-3">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    {transaction.isExpense ? (
+                                        <LuCircleChevronDown className="w-5 h-5 text-red-500 flex-shrink-0" />
+                                    ) : (
+                                        <LuCircleChevronUp className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                    )}
+                                    <div className="min-w-0">
+                                        <p className="text-sm font-medium text-gray-900 truncate">{transaction.description}</p>
+                                        <p className="text-xs text-gray-500">{transaction.date}</p>
+                                    </div>
+                                </div>
+                                <div className={`text-sm font-semibold ${transaction.isExpense ? 'text-red-500' : 'text-green-500'}`}>
+                                    {transaction.amount}
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
+                                <span className="px-2 py-0.5 bg-gray-200 rounded">{transaction.type}</span>
+                                <span>{transaction.transactionId}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                
+                {/* Desktop Table View */}
+                <table className="hidden sm:table min-w-full divide-y divide-[#F4F6F9]">
                     <thead className="bg-gray-50">
                         <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs  text-gray-500 uppercase tracking-wider font-semibold">Description</th>
@@ -168,6 +198,7 @@ const TransactionPage = () => {
                         ))}
                     </tbody>
                 </table>
+                </>
                 )}
             </div>
         </div>

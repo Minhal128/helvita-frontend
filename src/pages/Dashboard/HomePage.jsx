@@ -441,10 +441,10 @@ const HomePage = () => {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center m-5">
+      <div className="flex-1 flex items-center justify-center m-2.5 sm:m-5">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue mx-auto mb-4"></div>
-          <p className="text-gray">Loading dashboard...</p>
+          <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue mx-auto mb-4"></div>
+          <p className="text-gray text-sm sm:text-base">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -453,16 +453,16 @@ const HomePage = () => {
   return (
 
 
-    <div className="flex-1 overflow-x-auto  relative m-5">
+    <div className="flex-1 overflow-x-auto relative m-2.5 sm:m-5">
 
 
 
-      <div className='flex items-start gap-x-5 overflow-x-auto w-[100%]'>
+      <div className='flex flex-col lg:flex-row items-stretch gap-3 sm:gap-5 w-full'>
 
 
         {/* Virtual Card - Shows real user data */}
-        <div className='min-w-[20rem] relative'>
-          <div className="w-[20rem] h-[12.5rem] bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 rounded-2xl p-5 text-white shadow-xl relative overflow-hidden">
+        <div className='w-full lg:w-auto lg:min-w-[20rem] flex-shrink-0'>
+          <div className="w-full lg:w-[20rem] h-[11rem] sm:h-[12.5rem] bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 rounded-2xl p-4 sm:p-5 text-white shadow-xl relative overflow-hidden">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full -translate-y-1/2 translate-x-1/2"></div>
@@ -488,16 +488,16 @@ const HomePage = () => {
                 </p>
               </div>
               
-              <div className="flex justify-between items-end">
+              <div className="flex justify-between items-end flex-wrap gap-2">
                 <div>
                   <p className="text-xs text-white/70">Card Holder</p>
-                  <p className="text-sm font-medium uppercase">
+                  <p className="text-xs sm:text-sm font-medium uppercase truncate max-w-[100px] sm:max-w-none">
                     {userCard?.cardholderName || userProfile?.cardHolderName || userProfile?.nameOnCard || userProfile?.fullName || 'CARD HOLDER'}
                   </p>
                 </div>
                 <div>
                   <p className="text-xs text-white/70">Expires</p>
-                  <p className="text-sm font-medium">
+                  <p className="text-xs sm:text-sm font-medium">
                     {userCard ? formatExpiry(userCard.expMonth, userCard.expYear) : 'MM/YY'}
                   </p>
                 </div>
@@ -512,38 +512,38 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className='flex-1 min-w-[20rem] w-[100%] bg-white rounded-xl p-5'>
-          <p className='text-gray'>Available balance</p>
-          <h1 className='text-3xl font-semibold mt-2'>{formatCurrency(reserves.totalReserves)}</h1>
+        <div className='flex-1 min-w-0 w-full bg-white rounded-xl p-4 sm:p-5'>
+          <p className='text-gray text-sm sm:text-base'>Available balance</p>
+          <h1 className='text-2xl sm:text-3xl font-semibold mt-1 sm:mt-2'>{formatCurrency(reserves.totalReserves)}</h1>
 
-          <div className='mt-5 bg-[#F4F6F9] p-3 rounded-md'>
-            <h1 className='font-semibold'>Accounts</h1>
+          <div className='mt-3 sm:mt-5 bg-[#F4F6F9] p-3 rounded-md'>
+            <h1 className='font-semibold text-sm sm:text-base'>Accounts</h1>
             {reserves.accounts && reserves.accounts.length > 0 ? (
               reserves.accounts.slice(0, 2).map((account, index) => (
                 <div key={index} className='flex justify-between items-center mt-2'>
-                  <p className='text-gray'>{account.name || 'Account'}</p>
-                  <p className='font-medium'>{formatCurrency(account.availableBalance)}</p>
+                  <p className='text-gray text-sm'>{account.name || 'Account'}</p>
+                  <p className='font-medium text-sm'>{formatCurrency(account.availableBalance)}</p>
                 </div>
               ))
             ) : (
               <div className='flex justify-between items-center mt-2'>
-                <p className='text-gray'>No accounts linked</p>
-                <p className='font-medium'>$0.00</p>
+                <p className='text-gray text-sm'>No accounts linked</p>
+                <p className='font-medium text-sm'>$0.00</p>
               </div>
             )}
           </div>
 
         </div>
 
-        <div className='flex-1 min-w-[20rem] w-[100%] bg-white rounded-xl p-5'>
-          <p className='text-[#2A2F47]'>My expense</p>
+        <div className='flex-1 min-w-0 w-full bg-white rounded-xl p-4 sm:p-5'>
+          <p className='text-[#2A2F47] text-sm sm:text-base'>My expense</p>
           <div className='flex items-center gap-2 mt-2'>
             <div className='w-8 h-8 rounded-full bg-[#2A2F47] flex items-center justify-center'>
               <span className='text-white text-xs'>💰</span>
             </div>
             <span className='text-lg font-semibold'>{formatCurrency(totalExpense)}</span>
           </div>
-          <div className='flex justify-center items-end gap-2 mt-4 h-[10rem]'>
+          <div className='flex justify-center items-end gap-2 mt-4 h-[8rem] sm:h-[10rem]'>
             {expenseData.length > 0 ? (
               expenseData.map((item, index) => {
                 const maxAmount = Math.max(...expenseData.map(d => d.amount), 1);
@@ -552,7 +552,7 @@ const HomePage = () => {
                 return (
                   <div key={item.month} className='flex flex-col items-center gap-1'>
                     <div 
-                      className={`w-8 rounded-t-md ${isCurrentMonth ? 'bg-blue' : 'bg-[#E8EAED]'}`}
+                      className={`w-6 sm:w-8 rounded-t-md ${isCurrentMonth ? 'bg-blue' : 'bg-[#E8EAED]'}`}
                       style={{ height: `${Math.max(heightPercent, 5)}%` }}
                       title={formatCurrency(item.amount)}
                     ></div>
@@ -562,7 +562,7 @@ const HomePage = () => {
               })
             ) : (
               <div className='flex flex-col items-center justify-center h-full text-gray-400'>
-                <p>No expense data</p>
+                <p className='text-sm'>No expense data</p>
                 <p className='text-xs'>Link a bank to see expenses</p>
               </div>
             )}
@@ -574,21 +574,21 @@ const HomePage = () => {
       </div>
 
 
-      <div className='flex items-start gap-x-5 overflow-x-auto w-full mt-10'>
-        <div className='flex-1 min-w-[25rem] bg-white rounded-xl p-5'>
+      <div className='flex flex-col lg:flex-row items-stretch gap-3 sm:gap-5 w-full mt-5 sm:mt-10'>
+        <div className='flex-1 min-w-0 bg-white rounded-xl p-4 sm:p-5'>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">My Activity</h2>
-            <div className="flex items-center space-x-2 text-gray-600">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">My Activity</h2>
+            <div className="flex items-center space-x-2 text-gray-600 text-sm">
               <FiCalendar />
               <span>{new Date().getFullYear()}</span>
             </div>
           </div>
-          <Chart options={options} series={series} type="area" height={300} />
+          <Chart options={options} series={series} type="area" height={250} />
         </div>
 
-        <div className='min-w-[22rem] bg-white rounded-xl p-5'>
+        <div className='w-full lg:w-auto lg:min-w-[22rem] bg-white rounded-xl p-4 sm:p-5'>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Transactions</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Transactions</h2>
             <FiSettings className="text-gray-600 cursor-pointer" onClick={fetchDashboardData} />
           </div>
           <ul className="space-y-3">
@@ -612,16 +612,16 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className='flex justify-between items-start gap-x-5 overflow-x-auto w-[100%] mt-10 flex-wrap'>
+      <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5 w-full mt-5 sm:mt-10'>
 
 
-        <div className='md:min-w-[25rem] md:max-w-[25rem] w-[100%] bg-white rounded-xl p-5 mt-2'>
+        <div className='w-full bg-white rounded-xl p-4 sm:p-5'>
 
           <div className='flex justify-between items-center'>
 
-            <div className='flex items-center gap-x-3'>
+            <div className='flex items-center gap-x-2 sm:gap-x-3'>
               <IoIosSend className='text-blue' />
-              <p className='text-lg font-semibold'>Transfer</p>
+              <p className='text-base sm:text-lg font-semibold'>Transfer</p>
             </div>
 
             <HiDotsHorizontal className='text-blue cursor-pointer' onClick={fetchDashboardData} />
@@ -685,13 +685,13 @@ const HomePage = () => {
 
         </div>
 
-        <div className='md:min-w-[25rem] md:max-w-[25rem] w-[100%] bg-white rounded-xl p-5 mt-2'>
+        <div className='w-full bg-white rounded-xl p-4 sm:p-5'>
 
           <div className='flex justify-between items-center'>
 
-            <div className='flex items-center gap-x-3'>
+            <div className='flex items-center gap-x-2 sm:gap-x-3'>
               <CgArrowsExchange className='text-blue' />
-              <p className='text-lg font-semibold'>Conversion</p>
+              <p className='text-base sm:text-lg font-semibold'>Conversion</p>
             </div>
 
             <HiDotsHorizontal className='text-blue' />
@@ -737,8 +737,8 @@ const HomePage = () => {
 
         </div>
 
-        <div className='md:min-w-[25rem] md:max-w-[25rem] w-[100%] bg-white rounded-xl p-5 mt-2'>
-          <h1 className='font-medium'>Quick Transfer</h1>
+        <div className='w-full bg-white rounded-xl p-4 sm:p-5 md:col-span-2 xl:col-span-1'>
+          <h1 className='font-medium text-sm sm:text-base'>Quick Transfer</h1>
           
           {/* Recent contacts/accounts */}
           <div className='flex items-center mt-2 gap-x-2 overflow-x-auto py-2'>

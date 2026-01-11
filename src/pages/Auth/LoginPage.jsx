@@ -2,14 +2,58 @@ import Logo from "../../assets/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import Bg from "../../assets/auth/cover.svg";
 import { useState, useEffect, useCallback } from "react";
+import { useUser } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
 import { authAPI } from "../../services/api";
+import { useSignIn } from "@clerk/clerk-react";
 
 const LoginPage = () => {
   const nav = useNavigate();
+  const { signIn, isLoaded: isClerkLoaded } = useSignIn();
+  const { user, isLoaded: isUserLoaded } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleAppleSignIn = async () => {
+    if (!isClerkLoaded) {
+      toast.error("Apple Sign-In is not ready yet");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // If user is already signed in with Clerk, just redirect instead of starting a new OAuth flow
+      if (isUserLoaded && user) {
+        nav('/business/setup');
+        setLoading(false);
+        return;
+      }
+
+      await signIn.authenticateWithRedirect({
+        strategy: "oauth_apple",
+        redirectUrl: `${window.location.origin}/sso-callback`,
+        redirectUrlComplete: `${window.location.origin}/business/setup`,
+      });
+    } catch (error) {
+      console.error("Apple Sign-In error:", error);
+      // If Clerk reports the user is already signed in, redirect to the app flow instead of showing an error
+      const msg = error?.message || String(error);
+      if (msg?.toLowerCase?.().includes("already signed in") || msg?.toLowerCase?.().includes("already signed")) {
+        nav('/business/setup');
+      } else {
+        toast.error("Apple Sign-In failed: " + (error.message || "Unknown error"));
+      }
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isUserLoaded && user) {
+      // user already authenticated with Clerk, redirect to business setup
+      nav('/business/setup');
+    }
+  }, [isUserLoaded, user, nav]);
 
   const handleGoogleSignIn = useCallback(
     async (response) => {
@@ -99,13 +143,31 @@ const LoginPage = () => {
         localStorage.removeItem("accountType");
         localStorage.removeItem("password");
 
-        // Set new user data
+        // Set new user data with complete provisioning
         localStorage.setItem("token", response.token);
         localStorage.setItem("accountId", response.accountId || "");
+        localStorage.setItem("accountType", response.accountType || "business");
+        if (response.email) localStorage.setItem("userEmail", response.email);
+        if (response.cardHolderName) localStorage.setItem("cardHolderName", response.cardHolderName);
+        
         toast.success("Login successful!");
         nav("/dashboard/home");
       } else {
-        toast.error(response.error || "Login failed");
+        // Handle specific error codes for better UX
+        if (response.code === "EMAIL_NOT_VERIFIED") {
+          toast.error("Please verify your email first");
+          localStorage.setItem("registerEmail", response.email || email);
+          nav("/business/setup");
+        } else if (response.code === "IDENTITY_NOT_VERIFIED") {
+          toast.error("Please complete identity verification");
+          localStorage.setItem("registerEmail", response.email || email);
+          localStorage.setItem("accountType", response.accountType || "business");
+          // Set step to identity verification
+          localStorage.setItem("businessSetupStep", "4");
+          nav("/business/setup");
+        } else {
+          toast.error(response.error || "Login failed");
+        }
       }
     } catch (error) {
       toast.error("Error: " + error.message);
@@ -117,13 +179,13 @@ const LoginPage = () => {
   return (
     <div
       style={{ backgroundImage: `url(${Bg})` }}
-      className="flex justify-center items-center w-screen h-screen bg-blue flex-col"
+      className="flex justify-center items-center w-screen min-h-screen bg-blue flex-col p-4"
     >
-      <div className="w-[25rem] bg-white p-5 rounded-md">
+      <div className="w-full max-w-[25rem] bg-white p-4 sm:p-5 rounded-md">
         <div className="flex justify-center items-center flex-col">
-          <img src={Logo} alt="" />
-          <h1 className="text-[1.7rem] font-semibold mt-2">Welcome back!</h1>
-          <p className="text-gray mt-1">Log in to access your account</p>
+          <img src={Logo} alt="" className="h-10 sm:h-auto" />
+          <h1 className="text-xl sm:text-[1.7rem] font-semibold mt-2">Welcome back!</h1>
+          <p className="text-gray mt-1 text-sm sm:text-base text-center">Log in to access your account</p>
 
           <div className="mt-5 w-full flex flex-col gap-2">
             <button
@@ -139,11 +201,15 @@ const LoginPage = () => {
               </svg>
               Continue With Google
             </button>
-            <button className="w-full bg-[#F4F4FF] py-3 rounded-md text-sm cursor-pointer font-medium flex items-center justify-center gap-2">
+            <button 
+              onClick={handleAppleSignIn}
+              disabled={loading || !isClerkLoaded}
+              className="w-full bg-[#F4F4FF] py-3 rounded-md text-sm cursor-pointer font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+            >
               <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
                 <path d="M14.94 9.88c-.02-2.06 1.68-3.05 1.76-3.1-.96-1.4-2.45-1.59-2.98-1.61-1.27-.13-2.48.75-3.12.75-.64 0-1.63-.73-2.68-.71-1.38.02-2.65.8-3.36 2.03-1.43 2.49-.37 6.17 1.03 8.19.68.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.67 2.67-.67s1.6.67 2.68.65c1.11-.02 1.82-.99 2.49-1.99.79-1.14 1.11-2.25 1.13-2.31-.02-.01-2.17-.83-2.19-3.29zm-2.05-6.04c.57-.69.95-1.64.85-2.59-.82.03-1.81.55-2.4 1.23-.53.61-.99 1.59-.87 2.53.92.07 1.85-.46 2.42-1.17z" fill="#000"/>
               </svg>
-              Continue With Apple
+              {loading ? "Signing in..." : "Continue With Apple"}
             </button>
           </div>
 

@@ -86,66 +86,66 @@ const AccountPage = () => {
     }
 
     return (
-        <div className='flex-1 overflow-x-auto relative m-5'>
+        <div className='flex-1 overflow-x-auto relative m-2.5 sm:m-5'>
 
-            <div className="bg-white p-6 rounded-lg shadow-md ">
-
-
-                <h1 className='text-lg font-semibold mb-2'>Account</h1>
+            <div className="bg-white p-3 sm:p-6 rounded-lg shadow-md">
 
 
-                <div className='flex justify-between items-center gap-x-3 flex-wrap'>
+                <h1 className='text-base sm:text-lg font-semibold mb-2'>Account</h1>
 
-                    <div className='bg-[#F4F6F9] text-gray p-3 rounded-lg md:w-[25rem] mt-2'>
+
+                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4'>
+
+                    <div className='bg-[#F4F6F9] text-gray p-3 rounded-lg sm:col-span-2 lg:col-span-2 xl:col-span-1'>
                         <div className='flex items-center justify-between mt-1'>
-                            <p className='text-gray'>Account Holder</p>
-                            <p className='font-semibold text-sm'>{accountData.holder}</p>
-                        </div>
-                        <div className='flex items-center justify-between mt-1'>
-                            <p className='text-gray'>Account Number</p>
-                            <p className='font-semibold text-sm'>{accountData.accountNumber}</p>
+                            <p className='text-gray text-sm'>Account Holder</p>
+                            <p className='font-semibold text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[150px]'>{accountData.holder}</p>
                         </div>
                         <div className='flex items-center justify-between mt-1'>
-                            <p className='text-gray'>Account type</p>
-                            <p className='font-semibold text-sm'>{accountData.type}</p>
+                            <p className='text-gray text-sm'>Account Number</p>
+                            <p className='font-semibold text-xs sm:text-sm'>{accountData.accountNumber}</p>
                         </div>
                         <div className='flex items-center justify-between mt-1'>
-                            <p className='text-gray'>Currency</p>
-                            <p className='font-semibold text-sm'>{accountData.currency}</p>
+                            <p className='text-gray text-sm'>Account type</p>
+                            <p className='font-semibold text-xs sm:text-sm'>{accountData.type}</p>
+                        </div>
+                        <div className='flex items-center justify-between mt-1'>
+                            <p className='text-gray text-sm'>Currency</p>
+                            <p className='font-semibold text-xs sm:text-sm'>{accountData.currency}</p>
                         </div>
                     </div>
-                    <div className='bg-blue text-white p-3 rounded-lg flex-1 min-h-[8.6rem] mt-2'>
+                    <div className='bg-blue text-white p-3 rounded-lg min-h-[7rem] sm:min-h-[8.6rem]'>
 
                         <div className='flex justify-between items-center'>
-                            <IoIosCard />
-                            <HiDotsVertical />
+                            <IoIosCard className='text-lg sm:text-xl'/>
+                            <HiDotsVertical className='text-lg sm:text-xl'/>
                         </div>
-                        <p className='mt-2'>Current Balance</p>
-                        <h1 className='mt-7 text-lg font-semibold'>{formatCurrency(balance)}</h1>
+                        <p className='mt-2 text-sm'>Current Balance</p>
+                        <h1 className='mt-4 sm:mt-7 text-base sm:text-lg font-semibold'>{formatCurrency(balance)}</h1>
                     </div>
-                    <div className='bg-blue text-white p-3 rounded-lg flex-1 min-h-[8.6rem] mt-2'>
+                    <div className='bg-blue text-white p-3 rounded-lg min-h-[7rem] sm:min-h-[8.6rem]'>
                         <div className='flex justify-between items-center'>
-                            <IoIosCard />
-                            <HiDotsVertical />
+                            <IoIosCard className='text-lg sm:text-xl'/>
+                            <HiDotsVertical className='text-lg sm:text-xl'/>
                         </div>
-                        <p className='mt-2'>Spent</p>
-                        <h1 className='mt-7 text-lg font-semibold'>{formatCurrency(spent)}</h1>
+                        <p className='mt-2 text-sm'>Spent</p>
+                        <h1 className='mt-4 sm:mt-7 text-base sm:text-lg font-semibold'>{formatCurrency(spent)}</h1>
                     </div>
-                    <div className='bg-blue text-white p-3 rounded-lg flex-1 min-h-[8.6rem] mt-2'>
+                    <div className='bg-blue text-white p-3 rounded-lg min-h-[7rem] sm:min-h-[8.6rem]'>
                         <div className='flex justify-between items-center'>
-                            <IoIosCard />
-                            <HiDotsVertical />
+                            <IoIosCard className='text-lg sm:text-xl'/>
+                            <HiDotsVertical className='text-lg sm:text-xl'/>
                         </div>
-                        <p className='mt-2'>Transactions</p>
-                        <h1 className='mt-7 text-lg font-semibold'>{transactionCount}</h1>
+                        <p className='mt-2 text-sm'>Transactions</p>
+                        <h1 className='mt-4 sm:mt-7 text-base sm:text-lg font-semibold'>{transactionCount}</h1>
                     </div>
-                    <div className='bg-blue text-white p-3 rounded-lg flex-1 min-h-[8.6rem] mt-2'>
+                    <div className='bg-blue text-white p-3 rounded-lg min-h-[7rem] sm:min-h-[8.6rem]'>
                         <div className='flex justify-between items-center'>
-                            <IoIosCard />
-                            <HiDotsVertical />
+                            <IoIosCard className='text-lg sm:text-xl'/>
+                            <HiDotsVertical className='text-lg sm:text-xl'/>
                         </div>
-                        <p className='mt-2'>Cashback</p>
-                        <h1 className='mt-7 text-lg font-semibold'>$0</h1>
+                        <p className='mt-2 text-sm'>Cashback</p>
+                        <h1 className='mt-4 sm:mt-7 text-base sm:text-lg font-semibold'>$0</h1>
                     </div>
 
                 </div>

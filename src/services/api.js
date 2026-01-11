@@ -1,9 +1,10 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const getHeaders = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   return {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
   };
 };
@@ -14,7 +15,7 @@ export const authAPI = {
     const body = { email, password, accountType };
     if (referralCode) body.referralCode = referralCode;
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(body),
     });
@@ -23,7 +24,7 @@ export const authAPI = {
 
   verifyOtp: async (email, otp) => {
     const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ email, otp }),
     });
@@ -32,7 +33,7 @@ export const authAPI = {
 
   login: async (email, password) => {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ email, password }),
     });
@@ -41,7 +42,7 @@ export const authAPI = {
 
   forgotPassword: async (email) => {
     const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ email }),
     });
@@ -50,7 +51,7 @@ export const authAPI = {
 
   verifyResetOtp: async (email, otp) => {
     const response = await fetch(`${API_BASE_URL}/auth/verify-reset-otp`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ email, otp }),
     });
@@ -59,7 +60,7 @@ export const authAPI = {
 
   resetPassword: async (email, otp, newPassword) => {
     const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ email, otp, newPassword }),
     });
@@ -68,7 +69,7 @@ export const authAPI = {
 
   googleLogin: async (credential) => {
     const response = await fetch(`${API_BASE_URL}/auth/google-login`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ credential }),
     });
@@ -77,7 +78,7 @@ export const authAPI = {
 
   getProfile: async () => {
     const response = await fetch(`${API_BASE_URL}/auth/profile`, {
-      method: 'GET',
+      method: "GET",
       headers: getHeaders(),
     });
     return response.json();
@@ -85,7 +86,7 @@ export const authAPI = {
 
   getReferrals: async () => {
     const response = await fetch(`${API_BASE_URL}/auth/referrals`, {
-      method: 'GET',
+      method: "GET",
       headers: getHeaders(),
     });
     return response.json();
@@ -93,7 +94,7 @@ export const authAPI = {
 
   deleteAccount: async (password = null) => {
     const response = await fetch(`${API_BASE_URL}/auth/delete-account`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: getHeaders(),
       body: JSON.stringify({ password }),
     });
@@ -105,7 +106,7 @@ export const authAPI = {
 export const personalAPI = {
   investmentSetup: async (investmentType) => {
     const response = await fetch(`${API_BASE_URL}/personal/investment-setup`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ investmentType }),
     });
@@ -114,7 +115,7 @@ export const personalAPI = {
 
   personalDetails: async (data) => {
     const response = await fetch(`${API_BASE_URL}/personal/details`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -123,7 +124,7 @@ export const personalAPI = {
 
   bankSetup: async (data) => {
     const response = await fetch(`${API_BASE_URL}/personal/bank-setup`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -132,7 +133,7 @@ export const personalAPI = {
 
   startIdentityVerification: async () => {
     const response = await fetch(`${API_BASE_URL}/personal/identity/start`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
     });
     return response.json();
@@ -140,7 +141,7 @@ export const personalAPI = {
 
   createCard: async (data) => {
     const response = await fetch(`${API_BASE_URL}/personal/card/create`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -152,7 +153,7 @@ export const personalAPI = {
 export const businessAPI = {
   investmentSetup: async (investmentType) => {
     const response = await fetch(`${API_BASE_URL}/business/investment-setup`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ investmentType }),
     });
@@ -161,7 +162,7 @@ export const businessAPI = {
 
   addressSetup: async (data) => {
     const response = await fetch(`${API_BASE_URL}/business/address`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -170,7 +171,7 @@ export const businessAPI = {
 
   companyDetails: async (data) => {
     const response = await fetch(`${API_BASE_URL}/business/company-details`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -179,7 +180,7 @@ export const businessAPI = {
 
   startIdentityVerification: async () => {
     const response = await fetch(`${API_BASE_URL}/business/identity/start`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
     });
     return response.json();
@@ -187,7 +188,7 @@ export const businessAPI = {
 
   createCard: async (data) => {
     const response = await fetch(`${API_BASE_URL}/business/card/create`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -199,7 +200,7 @@ export const businessAPI = {
 export const adminAPI = {
   getPendingUsers: async () => {
     const response = await fetch(`${API_BASE_URL}/admin/users/pending`, {
-      method: 'GET',
+      method: "GET",
       headers: getHeaders(),
     });
     return response.json();
@@ -209,7 +210,7 @@ export const adminAPI = {
     const response = await fetch(
       `${API_BASE_URL}/admin/users/${userId}/approve`,
       {
-        method: 'POST',
+        method: "POST",
         headers: getHeaders(),
       },
     );
@@ -220,7 +221,7 @@ export const adminAPI = {
     const response = await fetch(
       `${API_BASE_URL}/admin/users/${userId}/reject`,
       {
-        method: 'POST',
+        method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ reason }),
       },
@@ -233,7 +234,7 @@ export const adminAPI = {
 export const setupAPI = {
   personalSetup: async (data) => {
     const response = await fetch(`${API_BASE_URL}/setup/personal-setup`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -242,7 +243,7 @@ export const setupAPI = {
 
   businessSetup: async (data) => {
     const response = await fetch(`${API_BASE_URL}/setup/business-setup`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -251,7 +252,7 @@ export const setupAPI = {
 
   personalIdentity: async (data) => {
     const response = await fetch(`${API_BASE_URL}/setup/personal-identity`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -260,7 +261,7 @@ export const setupAPI = {
 
   businessIdentity: async (data) => {
     const response = await fetch(`${API_BASE_URL}/setup/business-identity`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -269,7 +270,7 @@ export const setupAPI = {
 
   createCard: async (data) => {
     const response = await fetch(`${API_BASE_URL}/setup/create-card`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -278,7 +279,7 @@ export const setupAPI = {
 
   acceptTerms: async (data) => {
     const response = await fetch(`${API_BASE_URL}/setup/accept-terms`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -287,7 +288,7 @@ export const setupAPI = {
 
   adminApprove: async (data) => {
     const response = await fetch(`${API_BASE_URL}/setup/admin-approve`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -298,7 +299,7 @@ export const setupAPI = {
     const response = await fetch(
       `${API_BASE_URL}/setup/verify-document-status`,
       {
-        method: 'POST',
+        method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ email, verificationSessionId }),
       },
@@ -308,7 +309,7 @@ export const setupAPI = {
 
   generateQRCode: async (email) => {
     const response = await fetch(`${API_BASE_URL}/setup/generate-qr-code`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ email }),
     });
@@ -320,7 +321,7 @@ export const setupAPI = {
 export const plaidAPI = {
   createLinkToken: async () => {
     const response = await fetch(`${API_BASE_URL}/plaid/create-link-token`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
     });
     return response.json();
@@ -330,7 +331,7 @@ export const plaidAPI = {
     const response = await fetch(
       `${API_BASE_URL}/plaid/exchange-public-token`,
       {
-        method: 'POST',
+        method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ publicToken }),
       },
@@ -340,12 +341,12 @@ export const plaidAPI = {
 
   getTransactions: async (startDate, endDate) => {
     const params = new URLSearchParams();
-    if (startDate) params.append('startDate', startDate);
-    if (endDate) params.append('endDate', endDate);
+    if (startDate) params.append("startDate", startDate);
+    if (endDate) params.append("endDate", endDate);
     const response = await fetch(
       `${API_BASE_URL}/plaid/transactions?${params}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: getHeaders(),
       },
     );
@@ -354,7 +355,7 @@ export const plaidAPI = {
 
   getAccounts: async () => {
     const response = await fetch(`${API_BASE_URL}/plaid/accounts`, {
-      method: 'GET',
+      method: "GET",
       headers: getHeaders(),
     });
     return response.json();
@@ -362,7 +363,7 @@ export const plaidAPI = {
 
   getTransactionSummary: async () => {
     const response = await fetch(`${API_BASE_URL}/plaid/transaction-summary`, {
-      method: 'GET',
+      method: "GET",
       headers: getHeaders(),
     });
     return response.json();
@@ -370,7 +371,7 @@ export const plaidAPI = {
 
   getCardDetails: async () => {
     const response = await fetch(`${API_BASE_URL}/plaid/card-details`, {
-      method: 'GET',
+      method: "GET",
       headers: getHeaders(),
     });
     return response.json();
@@ -378,15 +379,15 @@ export const plaidAPI = {
 
   getReserves: async () => {
     const response = await fetch(`${API_BASE_URL}/plaid/reserves`, {
-      method: 'GET',
+      method: "GET",
       headers: getHeaders(),
     });
     return response.json();
   },
 
-  initiateTransfer: async (accountNumber, amount, description = '') => {
+  initiateTransfer: async (accountNumber, amount, description = "") => {
     const response = await fetch(`${API_BASE_URL}/plaid/transfer`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ accountNumber, amount, description }),
     });
@@ -395,7 +396,7 @@ export const plaidAPI = {
 
   quickTransfer: async (amount, saveAsDraft = false) => {
     const response = await fetch(`${API_BASE_URL}/plaid/quick-transfer`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ amount, saveAsDraft }),
     });
@@ -404,7 +405,7 @@ export const plaidAPI = {
 
   unlinkAccount: async () => {
     const response = await fetch(`${API_BASE_URL}/plaid/unlink`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
     });
     return response.json();
@@ -412,7 +413,7 @@ export const plaidAPI = {
 
   getTransfers: async () => {
     const response = await fetch(`${API_BASE_URL}/plaid/transfers`, {
-      method: 'GET',
+      method: "GET",
       headers: getHeaders(),
     });
     return response.json();
@@ -423,7 +424,7 @@ export const plaidAPI = {
 export const cardAPI = {
   addCard: async (cardData) => {
     const response = await fetch(`${API_BASE_URL}/card/add`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(cardData),
     });
@@ -432,7 +433,7 @@ export const cardAPI = {
 
   blockCard: async () => {
     const response = await fetch(`${API_BASE_URL}/card/block`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
     });
     return response.json();
@@ -440,7 +441,7 @@ export const cardAPI = {
 
   changePin: async () => {
     const response = await fetch(`${API_BASE_URL}/card/change-pin`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
     });
     return response.json();
@@ -448,7 +449,7 @@ export const cardAPI = {
 
   requestCard: async (data) => {
     const response = await fetch(`${API_BASE_URL}/card/request`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -457,7 +458,7 @@ export const cardAPI = {
 
   createInvoice: async (amount, description) => {
     const response = await fetch(`${API_BASE_URL}/card/invoice`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ amount, description }),
     });
@@ -466,7 +467,7 @@ export const cardAPI = {
 
   listInvoices: async () => {
     const response = await fetch(`${API_BASE_URL}/card/invoices`, {
-      method: 'GET',
+      method: "GET",
       headers: getHeaders(),
     });
     return response.json();
@@ -474,7 +475,7 @@ export const cardAPI = {
 
   makePayment: async (amount, paymentMethodId) => {
     const response = await fetch(`${API_BASE_URL}/card/payment`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ amount, paymentMethodId }),
     });
@@ -486,7 +487,7 @@ export const cardAPI = {
 export const supportAPI = {
   sendMessage: async (message) => {
     const response = await fetch(`${API_BASE_URL}/support/message`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ message }),
     });
@@ -495,7 +496,7 @@ export const supportAPI = {
 
   sendNotification: async (data) => {
     const response = await fetch(`${API_BASE_URL}/support/notification`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
@@ -504,7 +505,7 @@ export const supportAPI = {
 
   sendReferralInvites: async (emails) => {
     const response = await fetch(`${API_BASE_URL}/support/referral-invite`, {
-      method: 'POST',
+      method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ emails }),
     });

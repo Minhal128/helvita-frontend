@@ -72,7 +72,16 @@ const US_STATES = [
 ];
 
 const BusinessSetupPage = () => {
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(() => {
+        try {
+            const s = parseInt(localStorage.getItem('businessSetupStep') || '0', 10);
+            // Remove the flag so it doesn't persist for future visits
+            localStorage.removeItem('businessSetupStep');
+            return isNaN(s) ? 0 : s;
+        } catch (e) {
+            return 0;
+        }
+    });
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [accountType, setAccountType] = useState('');
     const inputRefs = Array(6).fill(null).map(() => React.createRef());

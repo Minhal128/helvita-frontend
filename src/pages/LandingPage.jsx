@@ -54,7 +54,7 @@ const LandingPage = () => {
 
             <div className='bg-[#F3F3F3] px-4 sm:px-6 lg:px-8 pb-10'>
 
-                <h1 className='text-[2.2rem] font-semibold text-center mt-10'>Innovate, Scale, Thrive with Helvetis</h1>
+                <h1 className='text-[2.2rem] font-semibold text-center mt-10'>Innovate, Scale, Thrive with Helvetia</h1>
 
                 <div className='flex items-start justify-center mt-10 flex-wrap md:flex-row flex-col gap-x-10'>
 

@@ -24,6 +24,7 @@ import DashboardSupportPage from './pages/Dashboard/SupportPage';
 import NotificationPage from './pages/Dashboard/NotificationPage';
 import SettingPage from './pages/Dashboard/SettingPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import SSOCallbackPage from './pages/Auth/SSOCallbackPage';
 
 const RegisterPage = lazy(() => import('./pages/Auth/RegisterPage'));
 const Layout = lazy(() => import('./components/dashboard/Layout'));
@@ -71,6 +72,7 @@ function App() {
             <Route path='/forgot-password' element={<ForgotPasswordPage />} />
             <Route path='/reset-password' element={<ResetPasswordPage />} />
             <Route path='/register' element={<RegisterPage />} />
+            <Route path='/sso-callback' element={<SSOCallbackPage />} />
 
             
             <Route path="/dashboard/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>

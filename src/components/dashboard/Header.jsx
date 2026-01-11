@@ -15,21 +15,21 @@ const Header = ({ location }) => {
 
     return (
 
-        <div className={`w-[88%] md:w-[97%] flex justify-between m-5 py-3 items-center px-5 bg-white rounded-xl`}>
+        <div className={`w-[calc(100%-1.25rem)] sm:w-[calc(100%-2.5rem)] flex justify-between mx-2.5 sm:mx-5 my-3 sm:my-5 py-2 sm:py-3 items-center px-3 sm:px-5 bg-white rounded-xl`}>
 
 
-            <p className='capitalize'>{location=="home"?"Dashboard":location}</p>
+            <p className='capitalize text-sm sm:text-base truncate'>{location=="home"?"Dashboard":location}</p>
 
 
-            <div className='flex items-center gap-x-4'>
-                <Link to={"/dashboard/setting"} className='bg-[#dadADA] rounded-full p-2'>
-                    <IoIosSettings/>
+            <div className='flex items-center gap-x-2 sm:gap-x-4 flex-shrink-0'>
+                <Link to={"/dashboard/setting"} className='bg-[#dadADA] rounded-full p-1.5 sm:p-2'>
+                    <IoIosSettings className='text-sm sm:text-base'/>
                 </Link>
-                <Link to={"/dashboard/notification"} className='bg-[#dadADA] rounded-full p-2'>
-                    <FaBell/>
+                <Link to={"/dashboard/notification"} className='bg-[#dadADA] rounded-full p-1.5 sm:p-2'>
+                    <FaBell className='text-sm sm:text-base'/>
                 </Link>
-                <div  onClick={() => toggleNav(!isNavOpen)} className='bg-[#dadADA] rounded-full p-2 lg:hidden block '>
-                    <GiHamburgerMenu/>
+                <div  onClick={() => toggleNav(!isNavOpen)} className='bg-[#dadADA] rounded-full p-1.5 sm:p-2 lg:hidden block cursor-pointer'>
+                    <GiHamburgerMenu className='text-sm sm:text-base'/>
                 </div>
                 {/* <GiHamburgerMenu className={`lg:hidden block cursor-pointer md:mt-0 mt-2 text-[#444444]`}/> */}
             </div>
