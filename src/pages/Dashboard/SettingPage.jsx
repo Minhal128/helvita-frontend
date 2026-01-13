@@ -7,11 +7,14 @@ import { MdEmail, MdPrivacyTip } from 'react-icons/md'
 import { authAPI } from '../../services/api'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const SettingPage = () => {
     const navigate = useNavigate()
+    const { t, i18n } = useTranslation()
     const [btns] = useState(["Account settings", "Payment & cards", "Preferences", "Security & privacy"])
     const [activeBtn, setActiveBtn] = useState(btns[0])
+    const [activeSubMenu, setActiveSubMenu] = useState('email') // Track submenu selection
     const [userProfile, setUserProfile] = useState(null)
     const [cards, setCards] = useState([])
     const [loading, setLoading] = useState(true)
@@ -20,6 +23,9 @@ const SettingPage = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [deletePassword, setDeletePassword] = useState('')
     const [deleting, setDeleting] = useState(false)
+    const [selectedLanguage, setSelectedLanguage] = useState(localStorage.getItem('language') || 'en')
+    const [billingHistory, setBillingHistory] = useState([])
+    const [showBillingHistory, setShowBillingHistory] = useState(false)
 
     useEffect(() => {
         fetchData()
@@ -41,6 +47,23 @@ const SettingPage = () => {
         } finally {
             setLoading(false)
         }
+    }
+
+    const handleLanguageChange = (lang) => {
+        setSelectedLanguage(lang)
+        i18n.changeLanguage(lang)
+        localStorage.setItem('language', lang)
+        toast.success(t('settings.language') + ' updated!')
+    }
+
+    const handleViewBillingHistory = () => {
+        setShowBillingHistory(true)
+        // Fetch billing history - mock data for now
+        setBillingHistory([
+            { id: 1, date: '2024-01-10', description: 'Monthly Subscription', amount: '$9.99', status: 'Paid' },
+            { id: 2, date: '2024-02-10', description: 'Monthly Subscription', amount: '$9.99', status: 'Paid' },
+            { id: 3, date: '2024-03-10', description: 'Monthly Subscription', amount: '$9.99', status: 'Pending' },
+        ])
     }
 
     const handleUpdateEmail = () => {
@@ -129,16 +152,22 @@ const SettingPage = () => {
                             {
                                 activeBtn === "Payment & cards" && (
                                     <div>
-                                        <div className='flex items-center gap-x-4 bg-[#F4F6F9] p-3 border-r-[5px] border-r-blue'>
+                                        <div 
+                                            onClick={() => setShowBillingHistory(false)}
+                                            className={`flex items-center gap-x-4 p-3 cursor-pointer ${!showBillingHistory ? 'bg-[#F4F6F9] border-r-[5px] border-r-blue' : ''}`}
+                                        >
                                             <div className='w-[2rem] h-[2rem] rounded-full bg-[#F4F4FF] text-blue flex justify-center items-center'><FaCreditCard /></div>
                                             <div>
-                                                <p className='text-[#525252]'>Manage save cards</p>
+                                                <p className='text-[#525252]'>{t('settings.manageSavedCards')}</p>
                                             </div>
                                         </div>
-                                        <div className='flex items-center gap-x-4 p-3'>
+                                        <div 
+                                            onClick={handleViewBillingHistory}
+                                            className={`flex items-center gap-x-4 p-3 cursor-pointer hover:bg-[#F4F6F9] ${showBillingHistory ? 'bg-[#F4F6F9] border-r-[5px] border-r-blue' : ''}`}
+                                        >
                                             <div className='w-[2rem] h-[2rem] rounded-full bg-[#F4F4FF] text-blue flex justify-center items-center'><FaLock /></div>
                                             <div>
-                                                <p className='text-[#525252]'>View Billing History</p>
+                                                <p className='text-[#525252]'>{t('settings.viewBillingHistory')}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -220,56 +249,92 @@ const SettingPage = () => {
                             {
                                 activeBtn === "Payment & cards" && (
                                     <div className='m-5'>
-                                        <table className="min-w-full border-collapse border border-[#F4F6F9] mt-3 ">
-                                            <thead className="bg-gray-50 border border-[#F4F6F9]">
-                                                <tr>
-                                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Card name</th>
-                                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank</th>
-                                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Card Number</th>
-                                                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"><HiDotsVertical /></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="bg-white border border-[#F4F6F9]">
-                                                {loading ? (
-                                                    <tr className='border border-[#F4F6F9]'>
-                                                        <td colSpan="4" className="px-6 py-4 text-center">Loading...</td>
+                                        {!showBillingHistory ? (
+                                            <table className="min-w-full border-collapse border border-[#F4F6F9] mt-3 ">
+                                                <thead className="bg-gray-50 border border-[#F4F6F9]">
+                                                    <tr>
+                                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('cards.cardName')}</th>
+                                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('cards.bank')}</th>
+                                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('cards.cardNumber')}</th>
+                                                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"><HiDotsVertical /></th>
                                                     </tr>
-                                                ) : cards.length > 0 ? (
-                                                    cards.map((card, index) => (
-                                                        <tr key={card.id || index} className='border border-[#F4F6F9]'>
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <div className="flex items-center">
-                                                                    <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
-                                                                        {card.name?.charAt(0) || 'C'}
-                                                                    </div>
-                                                                    <div className="ml-4">
-                                                                        <div className="text-sm font-medium text-gray-900">
-                                                                            {card.name || userProfile?.profile?.fullName || 'Card Holder'}
+                                                </thead>
+                                                <tbody className="bg-white border border-[#F4F6F9]">
+                                                    {loading ? (
+                                                        <tr className='border border-[#F4F6F9]'>
+                                                            <td colSpan="4" className="px-6 py-4 text-center">{t('cards.loading')}</td>
+                                                        </tr>
+                                                    ) : cards.length > 0 ? (
+                                                        cards.map((card, index) => (
+                                                            <tr key={card.id || index} className='border border-[#F4F6F9]'>
+                                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                                    <div className="flex items-center">
+                                                                        <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium">
+                                                                            {card.name?.charAt(0) || 'C'}
+                                                                        </div>
+                                                                        <div className="ml-4">
+                                                                            <div className="text-sm font-medium text-gray-900">
+                                                                                {card.name || userProfile?.profile?.fullName || 'Card Holder'}
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap ">
-                                                                <div className="text-sm text-gray-900">{card.subtype || card.type || 'Bank'}</div>
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap ">
-                                                                <div className="text-sm text-gray-900">•••• •••• •••• {card.mask || '****'}</div>
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap ">
-                                                                <div className="text-sm text-gray-900 cursor-pointer"><HiDotsVertical /></div>
+                                                                </td>
+                                                                <td className="px-6 py-4 whitespace-nowrap ">
+                                                                    <div className="text-sm text-gray-900">{card.subtype || card.type || 'Bank'}</div>
+                                                                </td>
+                                                                <td className="px-6 py-4 whitespace-nowrap ">
+                                                                    <div className="text-sm text-gray-900">•••• •••• •••• {card.mask || '****'}</div>
+                                                                </td>
+                                                                <td className="px-6 py-4 whitespace-nowrap ">
+                                                                    <div className="text-sm text-gray-900 cursor-pointer"><HiDotsVertical /></div>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr className='border border-[#F4F6F9]'>
+                                                            <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
+                                                                <p>{t('cards.noCards')}</p>
+                                                                <p className="text-sm mt-1">{t('cards.linkBank')}</p>
                                                             </td>
                                                         </tr>
-                                                    ))
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        ) : (
+                                            <div>
+                                                <h2 className='text-lg font-semibold mb-4'>{t('billing.title')}</h2>
+                                                {billingHistory.length > 0 ? (
+                                                    <table className="min-w-full border-collapse border border-[#F4F6F9]">
+                                                        <thead className="bg-gray-50 border border-[#F4F6F9]">
+                                                            <tr>
+                                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('billing.date')}</th>
+                                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('billing.description')}</th>
+                                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('billing.amount')}</th>
+                                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('billing.status')}</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody className="bg-white border border-[#F4F6F9]">
+                                                            {billingHistory.map((item) => (
+                                                                <tr key={item.id} className='border border-[#F4F6F9]'>
+                                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.date}</td>
+                                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.description}</td>
+                                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.amount}</td>
+                                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                                        <span className={`px-2 py-1 text-xs rounded-full ${item.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                                                            {item.status}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
                                                 ) : (
-                                                    <tr className='border border-[#F4F6F9]'>
-                                                        <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
-                                                            <p>No cards linked</p>
-                                                            <p className="text-sm mt-1">Link a bank account to see your cards here</p>
-                                                        </td>
-                                                    </tr>
+                                                    <div className="text-center py-8 text-gray-500">
+                                                        <p>{t('billing.noBillingHistory')}</p>
+                                                    </div>
                                                 )}
-                                            </tbody>
-                                        </table>
+                                            </div>
+                                        )}
                                     </div>
                                 )
                             }
@@ -277,21 +342,53 @@ const SettingPage = () => {
                             {
                                 activeBtn === "Preferences" && (
                                     <div className='m-5 flex-1'>
-                                        <div className='flex justify-between items-center w-[100%]'>
-                                            <h1>English</h1>
-                                            <input defaultChecked type="radio" name="" id="" />
+                                        <div 
+                                            onClick={() => handleLanguageChange('en')}
+                                            className='flex justify-between items-center w-[100%] cursor-pointer hover:bg-[#F4F6F9] p-2 rounded'
+                                        >
+                                            <h1>{t('languages.english')}</h1>
+                                            <input 
+                                                checked={selectedLanguage === 'en'} 
+                                                onChange={() => handleLanguageChange('en')}
+                                                type="radio" 
+                                                name="language" 
+                                            />
                                         </div>
-                                        <div className='flex justify-between items-center w-[100%] mt-2'>
-                                            <h1>Francais</h1>
-                                            <input type="radio" name="" id="" />
+                                        <div 
+                                            onClick={() => handleLanguageChange('fr')}
+                                            className='flex justify-between items-center w-[100%] mt-2 cursor-pointer hover:bg-[#F4F6F9] p-2 rounded'
+                                        >
+                                            <h1>{t('languages.french')}</h1>
+                                            <input 
+                                                checked={selectedLanguage === 'fr'} 
+                                                onChange={() => handleLanguageChange('fr')}
+                                                type="radio" 
+                                                name="language" 
+                                            />
                                         </div>
-                                        <div className='flex justify-between items-center w-[100%] mt-2'>
-                                            <h1>Russian</h1>
-                                            <input type="radio" name="" id="" />
+                                        <div 
+                                            onClick={() => handleLanguageChange('ru')}
+                                            className='flex justify-between items-center w-[100%] mt-2 cursor-pointer hover:bg-[#F4F6F9] p-2 rounded'
+                                        >
+                                            <h1>{t('languages.russian')}</h1>
+                                            <input 
+                                                checked={selectedLanguage === 'ru'} 
+                                                onChange={() => handleLanguageChange('ru')}
+                                                type="radio" 
+                                                name="language" 
+                                            />
                                         </div>
-                                        <div className='flex justify-between items-center w-[100%] mt-2'>
-                                            <h1>Polish</h1>
-                                            <input type="radio" name="" id="" />
+                                        <div 
+                                            onClick={() => handleLanguageChange('pl')}
+                                            className='flex justify-between items-center w-[100%] mt-2 cursor-pointer hover:bg-[#F4F6F9] p-2 rounded'
+                                        >
+                                            <h1>{t('languages.polish')}</h1>
+                                            <input 
+                                                checked={selectedLanguage === 'pl'} 
+                                                onChange={() => handleLanguageChange('pl')}
+                                                type="radio" 
+                                                name="language" 
+                                            />
                                         </div>
                                     </div>
                                 )

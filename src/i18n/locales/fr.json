@@ -1,0 +1,83 @@
+{
+    "settings": {
+        "title": "Paramètres",
+        "accountSettings": "Paramètres du compte",
+        "paymentCards": "Paiement et cartes",
+        "preferences": "Préférences",
+        "securityPrivacy": "Sécurité et confidentialité",
+        "updateEmail": "Mettre à jour l'adresse e-mail",
+        "changePassword": "Changer le mot de passe",
+        "add2FA": "Ajouter 2FA",
+        "manageSavedCards": "Gérer les cartes enregistrées",
+        "viewBillingHistory": "Voir l'historique de facturation",
+        "language": "Langue",
+        "notificationPreferences": "Préférences de notification",
+        "privacyPreference": "Préférences de confidentialité",
+        "deleteAccount": "Supprimer le compte",
+        "update": "Mettre à jour",
+        "enterOldEmail": "Entrez l'ancienne adresse e-mail",
+        "enterNewEmail": "Entrez la nouvelle adresse e-mail",
+        "deleteWarning": "La suppression de votre compte est définitive. Toutes vos données, cartes et historique de transactions seront définitivement supprimés.",
+        "deleteMyAccount": "Supprimer mon compte",
+        "deleteConfirm": "Êtes-vous sûr de vouloir supprimer votre compte? Cette action ne peut pas être annulée.",
+        "enterPassword": "Veuillez entrer votre mot de passe pour confirmer:",
+        "cancel": "Annuler",
+        "deleting": "Suppression..."
+    },
+    "account": {
+        "title": "Compte",
+        "accountHolder": "Titulaire du compte",
+        "accountNumber": "Numéro de compte",
+        "accountType": "Type de compte",
+        "currency": "Devise",
+        "currentBalance": "Solde actuel",
+        "spent": "Dépensé",
+        "transactions": "Transactions",
+        "cashback": "Remise en argent",
+        "loading": "Chargement du compte..."
+    },
+    "support": {
+        "title": "Support",
+        "faqs": "FAQ",
+        "emailSupport": "Contacter le support client",
+        "faq": "FAQ",
+        "transferDispute": "Litige de transfert",
+        "applyForCard": "Demander une carte",
+        "loginPayments": "Connexion et paiements",
+        "liftRestrictions": "Lever les restrictions",
+        "reportScam": "Signaler une arnaque",
+        "reportTransaction": "Signaler une transaction",
+        "customerSupport": "Support client",
+        "emailAway": "Nous sommes à un e-mail de distance",
+        "emailDescription": "Des questions, des problèmes ou des commentaires? Contactez notre équipe de support à tout moment par e-mail. Nous sommes là pour vous aider rapidement et de manière fiable—24/7.",
+        "learnMore": "En savoir plus",
+        "typeMessage": "Tapez votre message ici...",
+        "sendMessage": "Envoyer le message",
+        "sending": "Envoi..."
+    },
+    "billing": {
+        "title": "Historique de facturation",
+        "noBillingHistory": "Aucun historique de facturation disponible",
+        "date": "Date",
+        "description": "Description",
+        "amount": "Montant",
+        "status": "Statut"
+    },
+    "languages": {
+        "english": "English",
+        "french": "Français",
+        "russian": "Русский",
+        "polish": "Polski"
+    },
+    "cards": {
+        "cardName": "Nom de la carte",
+        "bank": "Banque",
+        "cardNumber": "Numéro de carte",
+        "noCards": "Aucune carte liée",
+        "linkBank": "Liez un compte bancaire pour voir vos cartes ici",
+        "loading": "Chargement..."
+    },
+    "common": {
+        "warning": "Avertissement"
+    }
+}

@@ -1,0 +1,83 @@
+{
+    "settings": {
+        "title": "Setting",
+        "accountSettings": "Account settings",
+        "paymentCards": "Payment & cards",
+        "preferences": "Preferences",
+        "securityPrivacy": "Security & privacy",
+        "updateEmail": "Update email address",
+        "changePassword": "Change Password",
+        "add2FA": "Add 2FA",
+        "manageSavedCards": "Manage save cards",
+        "viewBillingHistory": "View Billing History",
+        "language": "Language",
+        "notificationPreferences": "Notification preferences",
+        "privacyPreference": "Privacy preference",
+        "deleteAccount": "Delete Account",
+        "update": "Update",
+        "enterOldEmail": "Enter old email address",
+        "enterNewEmail": "Enter new email address",
+        "deleteWarning": "Deleting your account is permanent. All your data, cards, and transaction history will be permanently removed.",
+        "deleteMyAccount": "Delete My Account",
+        "deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
+        "enterPassword": "Please enter your password to confirm:",
+        "cancel": "Cancel",
+        "deleting": "Deleting..."
+    },
+    "account": {
+        "title": "Account",
+        "accountHolder": "Account Holder",
+        "accountNumber": "Account Number",
+        "accountType": "Account type",
+        "currency": "Currency",
+        "currentBalance": "Current Balance",
+        "spent": "Spent",
+        "transactions": "Transactions",
+        "cashback": "Cashback",
+        "loading": "Loading account..."
+    },
+    "support": {
+        "title": "Support",
+        "faqs": "Faqs",
+        "emailSupport": "Email our customer support",
+        "faq": "FAQ",
+        "transferDispute": "Transfer dispute",
+        "applyForCard": "Apply for card",
+        "loginPayments": "Login & Payments",
+        "liftRestrictions": "Lift restrictions",
+        "reportScam": "Report Scam",
+        "reportTransaction": "Report Transaction",
+        "customerSupport": "Customer Support",
+        "emailAway": "We're Just an Email Away",
+        "emailDescription": "Got questions, issues, or feedback? Reach out to our support team anytime via email. We're here to assist you with fast, friendly, and reliable help—24/7.",
+        "learnMore": "Learn More",
+        "typeMessage": "Type your message here...",
+        "sendMessage": "Send Message",
+        "sending": "Sending..."
+    },
+    "billing": {
+        "title": "Billing History",
+        "noBillingHistory": "No billing history available",
+        "date": "Date",
+        "description": "Description",
+        "amount": "Amount",
+        "status": "Status"
+    },
+    "languages": {
+        "english": "English",
+        "french": "Français",
+        "russian": "Русский",
+        "polish": "Polski"
+    },
+    "cards": {
+        "cardName": "Card name",
+        "bank": "Bank",
+        "cardNumber": "Card Number",
+        "noCards": "No cards linked",
+        "linkBank": "Link a bank account to see your cards here",
+        "loading": "Loading..."
+    },
+    "common": {
+        "warning": "Warning"
+    }
+}

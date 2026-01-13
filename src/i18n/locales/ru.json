@@ -1,0 +1,83 @@
+{
+    "settings": {
+        "title": "Настройки",
+        "accountSettings": "Настройки аккаунта",
+        "paymentCards": "Платежи и карты",
+        "preferences": "Предпочтения",
+        "securityPrivacy": "Безопасность и конфиденциальность",
+        "updateEmail": "Обновить адрес электронной почты",
+        "changePassword": "Изменить пароль",
+        "add2FA": "Добавить 2FA",
+        "manageSavedCards": "Управление сохраненными картами",
+        "viewBillingHistory": "Просмотр истории платежей",
+        "language": "Язык",
+        "notificationPreferences": "Настройки уведомлений",
+        "privacyPreference": "Настройки конфиденциальности",
+        "deleteAccount": "Удалить аккаунт",
+        "update": "Обновить",
+        "enterOldEmail": "Введите старый адрес электронной почты",
+        "enterNewEmail": "Введите новый адрес электронной почты",
+        "deleteWarning": "Удаление аккаунта необратимо. Все ваши данные, карты и история транзакций будут безвозвратно удалены.",
+        "deleteMyAccount": "Удалить мой аккаунт",
+        "deleteConfirm": "Вы уверены, что хотите удалить свой аккаунт? Это действие нельзя отменить.",
+        "enterPassword": "Пожалуйста, введите пароль для подтверждения:",
+        "cancel": "Отмена",
+        "deleting": "Удаление..."
+    },
+    "account": {
+        "title": "Счет",
+        "accountHolder": "Владелец счета",
+        "accountNumber": "Номер счета",
+        "accountType": "Тип счета",
+        "currency": "Валюта",
+        "currentBalance": "Текущий баланс",
+        "spent": "Потрачено",
+        "transactions": "Транзакции",
+        "cashback": "Кэшбэк",
+        "loading": "Загрузка счета..."
+    },
+    "support": {
+        "title": "Поддержка",
+        "faqs": "FAQ",
+        "emailSupport": "Написать в службу поддержки",
+        "faq": "Часто задаваемые вопросы",
+        "transferDispute": "Спор о переводе",
+        "applyForCard": "Заявка на карту",
+        "loginPayments": "Вход и платежи",
+        "liftRestrictions": "Снять ограничения",
+        "reportScam": "Сообщить о мошенничестве",
+        "reportTransaction": "Сообщить о транзакции",
+        "customerSupport": "Служба поддержки",
+        "emailAway": "Мы на расстоянии одного письма",
+        "emailDescription": "Есть вопросы, проблемы или отзывы? Свяжитесь с нашей службой поддержки в любое время по электронной почте. Мы здесь, чтобы помочь вам быстро и надежно—24/7.",
+        "learnMore": "Узнать больше",
+        "typeMessage": "Введите сообщение здесь...",
+        "sendMessage": "Отправить сообщение",
+        "sending": "Отправка..."
+    },
+    "billing": {
+        "title": "История платежей",
+        "noBillingHistory": "История платежей недоступна",
+        "date": "Дата",
+        "description": "Описание",
+        "amount": "Сумма",
+        "status": "Статус"
+    },
+    "languages": {
+        "english": "English",
+        "french": "Français",
+        "russian": "Русский",
+        "polish": "Polski"
+    },
+    "cards": {
+        "cardName": "Название карты",
+        "bank": "Банк",
+        "cardNumber": "Номер карты",
+        "noCards": "Карты не привязаны",
+        "linkBank": "Привяжите банковский счет, чтобы увидеть ваши карты здесь",
+        "loading": "Загрузка..."
+    },
+    "common": {
+        "warning": "Предупреждение"
+    }
+}

@@ -1,0 +1,83 @@
+{
+    "settings": {
+        "title": "Ustawienia",
+        "accountSettings": "Ustawienia konta",
+        "paymentCards": "Płatności i karty",
+        "preferences": "Preferencje",
+        "securityPrivacy": "Bezpieczeństwo i prywatność",
+        "updateEmail": "Zaktualizuj adres e-mail",
+        "changePassword": "Zmień hasło",
+        "add2FA": "Dodaj 2FA",
+        "manageSavedCards": "Zarządzaj zapisanymi kartami",
+        "viewBillingHistory": "Zobacz historię rozliczeń",
+        "language": "Język",
+        "notificationPreferences": "Preferencje powiadomień",
+        "privacyPreference": "Preferencje prywatności",
+        "deleteAccount": "Usuń konto",
+        "update": "Aktualizuj",
+        "enterOldEmail": "Wprowadź stary adres e-mail",
+        "enterNewEmail": "Wprowadź nowy adres e-mail",
+        "deleteWarning": "Usunięcie konta jest trwałe. Wszystkie dane, karty i historia transakcji zostaną trwale usunięte.",
+        "deleteMyAccount": "Usuń moje konto",
+        "deleteConfirm": "Czy na pewno chcesz usunąć swoje konto? Tej akcji nie można cofnąć.",
+        "enterPassword": "Proszę wprowadzić hasło, aby potwierdzić:",
+        "cancel": "Anuluj",
+        "deleting": "Usuwanie..."
+    },
+    "account": {
+        "title": "Konto",
+        "accountHolder": "Właściciel konta",
+        "accountNumber": "Numer konta",
+        "accountType": "Typ konta",
+        "currency": "Waluta",
+        "currentBalance": "Bieżące saldo",
+        "spent": "Wydano",
+        "transactions": "Transakcje",
+        "cashback": "Zwrot gotówki",
+        "loading": "Ładowanie konta..."
+    },
+    "support": {
+        "title": "Wsparcie",
+        "faqs": "FAQ",
+        "emailSupport": "Napisz do obsługi klienta",
+        "faq": "Często zadawane pytania",
+        "transferDispute": "Spór o przelew",
+        "applyForCard": "Złóż wniosek o kartę",
+        "loginPayments": "Logowanie i płatności",
+        "liftRestrictions": "Zdejmij ograniczenia",
+        "reportScam": "Zgłoś oszustwo",
+        "reportTransaction": "Zgłoś transakcję",
+        "customerSupport": "Obsługa klienta",
+        "emailAway": "Jesteśmy o jeden e-mail od Ciebie",
+        "emailDescription": "Masz pytania, problemy lub uwagi? Skontaktuj się z naszym zespołem wsparcia w dowolnym momencie przez e-mail. Jesteśmy tutaj, aby pomóc szybko i niezawodnie—24/7.",
+        "learnMore": "Dowiedz się więcej",
+        "typeMessage": "Wpisz swoją wiadomość tutaj...",
+        "sendMessage": "Wyślij wiadomość",
+        "sending": "Wysyłanie..."
+    },
+    "billing": {
+        "title": "Historia rozliczeń",
+        "noBillingHistory": "Brak historii rozliczeń",
+        "date": "Data",
+        "description": "Opis",
+        "amount": "Kwota",
+        "status": "Status"
+    },
+    "languages": {
+        "english": "English",
+        "french": "Français",
+        "russian": "Русский",
+        "polish": "Polski"
+    },
+    "cards": {
+        "cardName": "Nazwa karty",
+        "bank": "Bank",
+        "cardNumber": "Numer karty",
+        "noCards": "Brak powiązanych kart",
+        "linkBank": "Połącz konto bankowe, aby zobaczyć swoje karty tutaj",
+        "loading": "Ładowanie..."
+    },
+    "common": {
+        "warning": "Ostrzeżenie"
+    }
+}

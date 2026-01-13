@@ -50,6 +50,12 @@ const HomePage = () => {
   const [expenseData, setExpenseData] = useState([]);
   const [totalExpense, setTotalExpense] = useState(0);
 
+  // Date range for activity chart
+  const [activityDateRange, setActivityDateRange] = useState({
+    start: null,
+    end: null
+  });
+
   // Fetch dashboard data on mount
   useEffect(() => {
     fetchDashboardData();
@@ -113,12 +119,20 @@ const HomePage = () => {
       
       if (data && data.rates && data.rates.EUR) {
         setExchangeRate(data.rates.EUR);
-        setLastUpdated(new Date().toLocaleTimeString());
+        const now = new Date();
+        setLastUpdated(now.toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZoneName: 'short'
+        }));
       }
     } catch (error) {
       console.error('Error fetching exchange rate:', error);
       // Fallback rate if API fails
       setExchangeRate(0.92);
+      setLastUpdated('Offline rate');
     } finally {
       setRateLoading(false);
     }
@@ -206,10 +220,27 @@ const HomePage = () => {
         const monthlyData = processMonthlyData(summaryRes.transactions);
         setActivityData(monthlyData);
         
+        // Calculate date range from transactions
+        const dates = summaryRes.transactions.map(t => new Date(t.date));
+        const minDate = new Date(Math.min(...dates));
+        const maxDate = new Date(Math.max(...dates));
+        setActivityDateRange({
+          start: minDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          end: maxDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        });
+        
         // Process expense data (only expenses, not income)
         const expenseMonthlyData = processExpenseData(summaryRes.transactions);
         setExpenseData(expenseMonthlyData.data);
         setTotalExpense(expenseMonthlyData.total);
+      } else {
+        // Default date range for current year
+        const now = new Date();
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        setActivityDateRange({
+          start: startOfYear.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          end: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        });
       }
 
     } catch (error) {
@@ -580,7 +611,11 @@ const HomePage = () => {
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800">My Activity</h2>
             <div className="flex items-center space-x-2 text-gray-600 text-sm">
               <FiCalendar />
-              <span>{new Date().getFullYear()}</span>
+              <span>
+                {activityDateRange.start && activityDateRange.end 
+                  ? `${activityDateRange.start} - ${activityDateRange.end}`
+                  : new Date().getFullYear()}
+              </span>
             </div>
           </div>
           <Chart options={options} series={series} type="area" height={250} />
@@ -634,7 +669,7 @@ const HomePage = () => {
               value={transferAccount}
               onChange={(e) => setTransferAccount(e.target.value)}
               className='border border-[#AEB1B4] px-3 py-2 rounded-md outline-none w-full' 
-              placeholder='Enter account number' 
+              placeholder='Enter destination account/card number' 
             />
             <div className='flex justify-between items-center gap-x-2'>
               <input 
@@ -646,17 +681,18 @@ const HomePage = () => {
               />
               <button 
                 onClick={handleTransfer}
-                disabled={sendingTransfer}
+                disabled={sendingTransfer || !isLinked}
                 className='w-10 h-10 rounded-full bg-blue flex justify-center items-center text-white hover:bg-blue/90 disabled:opacity-50'
+                title={!isLinked ? 'Link a bank account first' : 'Send transfer'}
               >
                 {sendingTransfer ? '...' : <FaArrowRight />}
               </button>
             </div>
           </div>
 
-          <p className='mt-2 text-gray text-sm'>
+          <p className='mt-2 text-gray text-xs sm:text-sm'>
             {reserves.accounts?.length > 0 
-              ? `Transfer from ${reserves.accounts[0]?.name || 'your account'}` 
+              ? `Transfer from: ${reserves.accounts[0]?.name || 'Linked Account'} (****${reserves.accounts[0]?.mask || '****'})` 
               : 'Link a bank account to enable transfers'}
           </p>
 
@@ -722,9 +758,11 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className='flex justify-between items-center mt-2'>
-            <p className='text-gray text-sm'>
-              {rateLoading ? 'Loading rate...' : `Rate: 1 USD = ${exchangeRate?.toFixed(4) || '---'} EUR`}
+          <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 gap-1'>
+            <p className='text-gray text-xs sm:text-sm'>
+              {rateLoading 
+                ? 'Loading rate...' 
+                : `Rate = ${exchangeRate?.toFixed(2) || '---'} (${lastUpdated || 'N/A'})`}
             </p>
             <button 
               onClick={fetchExchangeRate}
@@ -747,7 +785,7 @@ const HomePage = () => {
                 <div 
                   key={index} 
                   className='flex flex-col items-center cursor-pointer hover:opacity-80'
-                  onClick={() => setTransferAccount(account.accountId || '')}
+                  title={account.name}
                 >
                   <div className='w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-medium'>
                     {account.name?.charAt(0) || 'A'}
@@ -757,28 +795,40 @@ const HomePage = () => {
               ))
             ) : (
               // Placeholder when no accounts
-              [1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className='flex flex-col items-center'>
-                  <div className='w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400'>
-                    <FaUser className='text-sm' />
+              <div className='flex items-center gap-x-2'>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className='flex flex-col items-center opacity-50'>
+                    <div className='w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400'>
+                      <FaUser className='text-sm' />
+                    </div>
+                    <p className='text-xs text-gray mt-1'>---</p>
                   </div>
-                  <p className='text-xs text-gray mt-1'>---</p>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
+          
+          {/* Show linked card/account info */}
+          {reserves.accounts && reserves.accounts.length > 0 && (
+            <div className='bg-[#F4F6F9] px-3 py-2 rounded-md mt-2 text-sm text-gray-600'>
+              <span className='font-medium'>{reserves.accounts[0]?.name}</span>
+              <span className='ml-2'>•••• {reserves.accounts[0]?.mask || '****'}</span>
+            </div>
+          )}
           
           <input 
             type="number" 
             value={quickTransferAmount}
             onChange={(e) => setQuickTransferAmount(e.target.value)}
             className='border border-[#AEB1B4] px-3 py-2 rounded-md outline-none w-full mt-3' 
-            placeholder='Enter amount ($)' 
+            placeholder={isLinked ? 'Enter amount ($)' : 'Link account to transfer'} 
+            disabled={!isLinked}
           />
 
           <div className='flex items-center gap-x-2 mt-2'>
             <button 
-              className='flex-1 border border-blue py-3 rounded-lg text-blue hover:bg-blue/5'
+              className='flex-1 border border-blue py-3 rounded-lg text-blue hover:bg-blue/5 disabled:opacity-50'
+              disabled={!isLinked}
               onClick={() => {
                 if (quickTransferAmount) {
                   toast.success('Draft saved!');
@@ -791,7 +841,7 @@ const HomePage = () => {
             </button>
             <button 
               className='flex-1 bg-blue text-white py-3 rounded-lg hover:bg-blue/90 disabled:opacity-50'
-              disabled={sendingTransfer}
+              disabled={sendingTransfer || !isLinked}
               onClick={handleQuickTransfer}
             >
               {sendingTransfer ? 'Sending...' : 'Send money'}
