@@ -1,4 +1,77 @@
 {
+    "common": {
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "submit": "Submit",
+        "back": "Back",
+        "next": "Next",
+        "confirm": "Confirm",
+        "warning": "Warning",
+        "yes": "Yes",
+        "no": "No",
+        "logout": "Logout",
+        "menu": "Menu",
+        "search": "Search",
+        "noData": "No data available",
+        "refresh": "Refresh"
+    },
+    "sidebar": {
+        "dashboard": "Dashboard",
+        "transaction": "Transaction",
+        "account": "Account",
+        "card": "Card",
+        "statements": "Statements",
+        "reserves": "Reserves",
+        "invoices": "Invoices",
+        "referral": "Referral",
+        "support": "Support",
+        "settings": "Settings",
+        "notifications": "Notifications"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "welcome": "Welcome back",
+        "myActivity": "My Activity",
+        "transactions": "Transactions",
+        "transfer": "Transfer",
+        "conversion": "Conversion",
+        "quickTransfer": "Quick Transfer",
+        "virtualCard": "Virtual Card",
+        "cardHolder": "Card Holder",
+        "expires": "Expires",
+        "status": "Status",
+        "availableBalance": "Available balance",
+        "accounts": "Accounts",
+        "noAccountsLinked": "No accounts linked",
+        "myExpense": "My expense",
+        "noExpenseData": "No expense data",
+        "linkBankToSeeExpenses": "Link a bank to see expenses",
+        "enterAccountNumber": "Enter destination account/card number",
+        "amount": "Amount",
+        "transferFrom": "Transfer from",
+        "linkAccountToTransfer": "Link a bank account to enable transfers",
+        "linkBankAccount": "Link Bank Account",
+        "unlinkBankAccount": "Unlink Bank Account",
+        "linking": "Linking...",
+        "unlinking": "Unlinking...",
+        "usd": "USD",
+        "eur": "EUR",
+        "loadingRate": "Loading rate...",
+        "rate": "Rate",
+        "enterAmount": "Enter amount",
+        "linkAccountFirst": "Link account to transfer",
+        "saveAsDraft": "Save as draft",
+        "sendMoney": "Send money",
+        "sending": "Sending...",
+        "currentBalance": "Current Balance",
+        "spent": "Spent",
+        "cashback": "Cashback"
+    },
     "settings": {
         "title": "Setting",
         "accountSettings": "Account settings",
@@ -21,7 +94,6 @@
         "deleteMyAccount": "Delete My Account",
         "deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
         "enterPassword": "Please enter your password to confirm:",
-        "cancel": "Cancel",
         "deleting": "Deleting..."
     },
     "account": {
@@ -38,7 +110,7 @@
     },
     "support": {
         "title": "Support",
-        "faqs": "Faqs",
+        "faqs": "FAQs",
         "emailSupport": "Email our customer support",
         "faq": "FAQ",
         "transferDispute": "Transfer dispute",
@@ -61,7 +133,11 @@
         "date": "Date",
         "description": "Description",
         "amount": "Amount",
-        "status": "Status"
+        "status": "Status",
+        "paid": "Paid",
+        "pending": "Pending",
+        "failed": "Failed",
+        "loading": "Loading billing history..."
     },
     "languages": {
         "english": "English",
@@ -70,14 +146,66 @@
         "polish": "Polski"
     },
     "cards": {
+        "title": "Cards",
         "cardName": "Card name",
         "bank": "Bank",
         "cardNumber": "Card Number",
         "noCards": "No cards linked",
         "linkBank": "Link a bank account to see your cards here",
-        "loading": "Loading..."
+        "loading": "Loading...",
+        "addCard": "Add Card",
+        "blockCard": "Block Card",
+        "virtualCard": "Virtual Card",
+        "physicalCard": "Physical Card"
     },
-    "common": {
-        "warning": "Warning"
+    "transactions": {
+        "title": "Transactions",
+        "recent": "Recent Transactions",
+        "all": "All Transactions",
+        "noTransactions": "No transactions yet",
+        "income": "Income",
+        "expense": "Expense",
+        "date": "Date",
+        "merchant": "Merchant",
+        "amount": "Amount",
+        "category": "Category"
+    },
+    "statements": {
+        "title": "Statements",
+        "download": "Download",
+        "monthly": "Monthly Statement",
+        "annual": "Annual Statement",
+        "noStatements": "No statements available"
+    },
+    "reserves": {
+        "title": "Reserves",
+        "totalReserves": "Total Reserves",
+        "linkedAccounts": "Linked Accounts",
+        "noReserves": "No reserves data"
+    },
+    "invoices": {
+        "title": "Invoices",
+        "create": "Create Invoice",
+        "noInvoices": "No invoices yet",
+        "invoiceNumber": "Invoice #",
+        "dueDate": "Due Date",
+        "total": "Total"
+    },
+    "referral": {
+        "title": "Referral Program",
+        "inviteFriends": "Invite Friends",
+        "yourCode": "Your Referral Code",
+        "copyCode": "Copy Code",
+        "totalReferrals": "Total Referrals",
+        "pendingRewards": "Pending Rewards",
+        "earnedRewards": "Earned Rewards",
+        "enterEmail": "Enter email address",
+        "sendInvite": "Send Invite"
+    },
+    "notifications": {
+        "title": "Notifications",
+        "noNotifications": "No notifications",
+        "markAllRead": "Mark all as read",
+        "settings": "Notification Settings"
     }
 }

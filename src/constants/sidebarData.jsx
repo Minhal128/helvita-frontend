@@ -10,55 +10,55 @@ export const navData = [
     {
         id: 1,
         link: "home",
-        name: "Dashboard",
+        nameKey: "sidebar.dashboard",
         icon: <RiHome5Fill />
     },
     {
         id: 7,
         link: "transaction",
-        name: "Transaction",
+        nameKey: "sidebar.transaction",
         icon: <GrTransaction />
     },
     {
         id: 8,
         link: "account",
-        name: "Account",
+        nameKey: "sidebar.account",
         icon: <MdManageAccounts />
     },
     {
         id: 9,
         link: "card",
-        name: "Card",
+        nameKey: "sidebar.card",
         icon: <IoCardSharp />
     },
     {
         id: 11,
         link: "statement",
-        name: "Statements",
+        nameKey: "sidebar.statements",
         icon: <GrDocumentText />
     },
     {
         id: 12,
         link: "reserve",
-        name: "Reserves",
+        nameKey: "sidebar.reserves",
         icon: <FaTv />
     },
     {
         id: 13,
         link: "invoice",
-        name: "Invoices",
+        nameKey: "sidebar.invoices",
         icon: <FaFileInvoiceDollar />
     },
     {
         id: 14,
         link: "referal",
-        name: "Referal",
+        nameKey: "sidebar.referral",
         icon: <GoCrossReference />
     },
     {
         id: 15,
         link: "support",
-        name: "Support",
+        nameKey: "sidebar.support",
         icon: <MdOutlineContactSupport />
     },
 ];

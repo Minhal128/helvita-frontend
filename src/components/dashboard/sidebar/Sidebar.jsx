@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { navData } from '../../../constants/sidebarData';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { IoLogOut } from 'react-icons/io5';
@@ -8,6 +9,7 @@ import LightModeLogo from '../../../assets/logo.svg'
 import { useTheme } from '../../../context/ThemeContext';
 
 const Sidebar = () => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const location = useLocation().pathname.split("/")[2];
   const { isNavOpen, toggleNav } = useSidebar();
@@ -46,7 +48,7 @@ const Sidebar = () => {
             <Link to={`/dashboard/${i.link}`} key={i.id} className={`flex pl-5 justify-between items-center gap-x-3 mb-1 cursor-pointer ${(location == i.link || (location == "home" && i.link == "home?query=Music")) ? "text-blue" : "text-gray"}`}>
               <div className='flex items-center gap-x-3 '>
                 <div>{i.icon}</div>
-                <p className='text-sm'>{i.name}</p>
+                <p className='text-sm'>{t(i.nameKey)}</p>
               </div>
               <div className={`w-1 h-8 ${(location == i.link || (location == "home" && i.link == "home?query=Music")) ? "bg-blue" : "bg-transparent"} rounded-tl-md rounded-bl-md`}></div>
             </Link>
@@ -58,7 +60,7 @@ const Sidebar = () => {
         <div className='absolute bottom-5 w-[80%] flex justify-between items-center mx-5 '>
           <div onClick={() => nav("/")} className='flex items-center gap-x-2 cursor-pointer'>
             <IoLogOut className='text-[#FF1700] cursor-pointer text-xl' />
-            <p className='text-xs text-[#FF1700]'>Logout</p>
+            <p className='text-xs text-[#FF1700]'>{t('common.logout')}</p>
           </div>
         </div>
 
@@ -76,12 +78,12 @@ const Sidebar = () => {
 
 
             <div className='mt-7'>
-              <p className='text-sm text-[#8D8D8D] pl-5 mb-2'>Menu</p>
+              <p className='text-sm text-[#8D8D8D] pl-5 mb-2'>{t('common.menu')}</p>
               {navData?.map((i) => (
                 <Link to={`/dashboard/${i.link}`} key={i.id} className={`flex pl-5 justify-between items-center gap-x-3 mb-1 cursor-pointer ${(location == i.link || (location == "home" && i.link == "home?query=Music")) ? "text-blue" : "text-gray"}`}>
                   <div className='flex items-center gap-x-3 '>
                     <div>{i.icon}</div>
-                    <p className='text-sm'>{i.name}</p>
+                    <p className='text-sm'>{t(i.nameKey)}</p>
                   </div>
                   <div className={`w-1 h-8 ${(location == i.link || (location == "home" && i.link == "home?query=Music")) ? "bg-blue" : "bg-transparent"} rounded-tl-md rounded-bl-md`}></div>
                 </Link>
@@ -92,7 +94,7 @@ const Sidebar = () => {
             <div className='absolute bottom-5 w-[80%] flex justify-between items-center mx-5 '>
               <div onClick={() => nav("/")} className='flex items-center gap-x-2 cursor-pointer'>
                 <IoLogOut className='text-blue cursor-pointer text-xl' />
-                <p className='text-xs text-blue'>Logout</p>
+                <p className='text-xs text-blue'>{t('common.logout')}</p>
               </div>
             </div>
 

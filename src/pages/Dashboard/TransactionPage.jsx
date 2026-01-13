@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FaCalendar } from 'react-icons/fa';
 import { FiDownload } from 'react-icons/fi';
 import { LuCircleChevronDown, LuCircleChevronUp } from "react-icons/lu";
 import { plaidAPI } from '../../services/api';
 
 const TransactionPage = () => {
+    const { t } = useTranslation();
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all'); // 'all', 'deposit', 'transfer'
@@ -80,7 +82,7 @@ const TransactionPage = () => {
             <div className='flex-1 flex items-center justify-center m-2.5 sm:m-5 bg-white rounded-lg p-3 sm:p-5'>
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue mx-auto mb-4"></div>
-                    <p className="text-gray text-sm sm:text-base">Loading transactions...</p>
+                    <p className="text-gray text-sm sm:text-base">{t('common.loading')}</p>
                 </div>
             </div>
         );

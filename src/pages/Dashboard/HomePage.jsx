@@ -8,11 +8,13 @@ import { MdCompareArrows } from "react-icons/md";
 import { CgArrowsExchange } from "react-icons/cg";
 import { FaLink } from "react-icons/fa";
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { plaidAPI, authAPI } from '../../services/api';
 import { usePlaidLink } from 'react-plaid-link';
 
 const HomePage = () => {
+  const { t } = useTranslation();
   const [accountData, setAccountData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [cardDetails, setCardDetails] = useState([]);
@@ -475,7 +477,7 @@ const HomePage = () => {
       <div className="flex-1 flex items-center justify-center m-2.5 sm:m-5">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue mx-auto mb-4"></div>
-          <p className="text-gray text-sm sm:text-base">Loading dashboard...</p>
+          <p className="text-gray text-sm sm:text-base">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -504,7 +506,7 @@ const HomePage = () => {
             <div className="relative z-10 h-full flex flex-col justify-between">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-xs text-white/70">Virtual Card</p>
+                  <p className="text-xs text-white/70">{t('dashboard.virtualCard')}</p>
                   <p className="text-sm font-medium">Helvita</p>
                 </div>
                 <div className="flex space-x-1">
@@ -521,19 +523,19 @@ const HomePage = () => {
               
               <div className="flex justify-between items-end flex-wrap gap-2">
                 <div>
-                  <p className="text-xs text-white/70">Card Holder</p>
+                  <p className="text-xs text-white/70">{t('dashboard.cardHolder')}</p>
                   <p className="text-xs sm:text-sm font-medium uppercase truncate max-w-[100px] sm:max-w-none">
                     {userCard?.cardholderName || userProfile?.cardHolderName || userProfile?.nameOnCard || userProfile?.fullName || 'CARD HOLDER'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/70">Expires</p>
+                  <p className="text-xs text-white/70">{t('dashboard.expires')}</p>
                   <p className="text-xs sm:text-sm font-medium">
                     {userCard ? formatExpiry(userCard.expMonth, userCard.expYear) : 'MM/YY'}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-white/70">Status</p>
+                  <p className="text-xs text-white/70">{t('dashboard.status')}</p>
                   <p className="text-xs font-medium capitalize">
                     {userCard?.status || 'N/A'}
                   </p>
@@ -544,11 +546,11 @@ const HomePage = () => {
         </div>
 
         <div className='flex-1 min-w-0 w-full bg-white rounded-xl p-4 sm:p-5'>
-          <p className='text-gray text-sm sm:text-base'>Available balance</p>
+          <p className='text-gray text-sm sm:text-base'>{t('dashboard.availableBalance')}</p>
           <h1 className='text-2xl sm:text-3xl font-semibold mt-1 sm:mt-2'>{formatCurrency(reserves.totalReserves)}</h1>
 
           <div className='mt-3 sm:mt-5 bg-[#F4F6F9] p-3 rounded-md'>
-            <h1 className='font-semibold text-sm sm:text-base'>Accounts</h1>
+            <h1 className='font-semibold text-sm sm:text-base'>{t('dashboard.accounts')}</h1>
             {reserves.accounts && reserves.accounts.length > 0 ? (
               reserves.accounts.slice(0, 2).map((account, index) => (
                 <div key={index} className='flex justify-between items-center mt-2'>
@@ -558,7 +560,7 @@ const HomePage = () => {
               ))
             ) : (
               <div className='flex justify-between items-center mt-2'>
-                <p className='text-gray text-sm'>No accounts linked</p>
+                <p className='text-gray text-sm'>{t('dashboard.noAccountsLinked')}</p>
                 <p className='font-medium text-sm'>$0.00</p>
               </div>
             )}
@@ -567,7 +569,7 @@ const HomePage = () => {
         </div>
 
         <div className='flex-1 min-w-0 w-full bg-white rounded-xl p-4 sm:p-5'>
-          <p className='text-[#2A2F47] text-sm sm:text-base'>My expense</p>
+          <p className='text-[#2A2F47] text-sm sm:text-base'>{t('dashboard.myExpense')}</p>
           <div className='flex items-center gap-2 mt-2'>
             <div className='w-8 h-8 rounded-full bg-[#2A2F47] flex items-center justify-center'>
               <span className='text-white text-xs'>💰</span>
@@ -593,8 +595,8 @@ const HomePage = () => {
               })
             ) : (
               <div className='flex flex-col items-center justify-center h-full text-gray-400'>
-                <p className='text-sm'>No expense data</p>
-                <p className='text-xs'>Link a bank to see expenses</p>
+                <p className='text-sm'>{t('dashboard.noExpenseData')}</p>
+                <p className='text-xs'>{t('dashboard.linkBankToSeeExpenses')}</p>
               </div>
             )}
           </div>
@@ -608,7 +610,7 @@ const HomePage = () => {
       <div className='flex flex-col lg:flex-row items-stretch gap-3 sm:gap-5 w-full mt-5 sm:mt-10'>
         <div className='flex-1 min-w-0 bg-white rounded-xl p-4 sm:p-5'>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">My Activity</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">{t('dashboard.myActivity')}</h2>
             <div className="flex items-center space-x-2 text-gray-600 text-sm">
               <FiCalendar />
               <span>
@@ -623,7 +625,7 @@ const HomePage = () => {
 
         <div className='w-full lg:w-auto lg:min-w-[22rem] bg-white rounded-xl p-4 sm:p-5'>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Transactions</h2>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">{t('dashboard.transactions')}</h2>
             <FiSettings className="text-gray-600 cursor-pointer" onClick={fetchDashboardData} />
           </div>
           <ul className="space-y-3">
@@ -656,7 +658,7 @@ const HomePage = () => {
 
             <div className='flex items-center gap-x-2 sm:gap-x-3'>
               <IoIosSend className='text-blue' />
-              <p className='text-base sm:text-lg font-semibold'>Transfer</p>
+              <p className='text-base sm:text-lg font-semibold'>{t('dashboard.transfer')}</p>
             </div>
 
             <HiDotsHorizontal className='text-blue cursor-pointer' onClick={fetchDashboardData} />
@@ -669,7 +671,7 @@ const HomePage = () => {
               value={transferAccount}
               onChange={(e) => setTransferAccount(e.target.value)}
               className='border border-[#AEB1B4] px-3 py-2 rounded-md outline-none w-full' 
-              placeholder='Enter destination account/card number' 
+              placeholder={t('dashboard.enterAccountNumber')} 
             />
             <div className='flex justify-between items-center gap-x-2'>
               <input 
@@ -677,13 +679,13 @@ const HomePage = () => {
                 value={transferAmount}
                 onChange={(e) => setTransferAmount(e.target.value)}
                 className='border border-[#AEB1B4] px-3 py-2 rounded-md outline-none flex-1' 
-                placeholder='Amount ($)' 
+                placeholder={t('dashboard.amount') + ' ($)'} 
               />
               <button 
                 onClick={handleTransfer}
                 disabled={sendingTransfer || !isLinked}
                 className='w-10 h-10 rounded-full bg-blue flex justify-center items-center text-white hover:bg-blue/90 disabled:opacity-50'
-                title={!isLinked ? 'Link a bank account first' : 'Send transfer'}
+                title={!isLinked ? t('dashboard.linkAccountFirst') : t('dashboard.sendMoney')}
               >
                 {sendingTransfer ? '...' : <FaArrowRight />}
               </button>
@@ -692,8 +694,8 @@ const HomePage = () => {
 
           <p className='mt-2 text-gray text-xs sm:text-sm'>
             {reserves.accounts?.length > 0 
-              ? `Transfer from: ${reserves.accounts[0]?.name || 'Linked Account'} (****${reserves.accounts[0]?.mask || '****'})` 
-              : 'Link a bank account to enable transfers'}
+              ? `${t('dashboard.transferFrom')}: ${reserves.accounts[0]?.name || 'Linked Account'} (****${reserves.accounts[0]?.mask || '****'})` 
+              : t('dashboard.linkAccountToTransfer')}
           </p>
 
           {/* Link Bank Account Button */}
@@ -704,7 +706,7 @@ const HomePage = () => {
               className='w-full mt-3 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 flex items-center justify-center gap-2'
             >
               <FaLink />
-              {linkingAccount ? 'Linking...' : 'Link Bank Account'}
+              {linkingAccount ? t('dashboard.linking') : t('dashboard.linkBankAccount')}
             </button>
           )}
 
@@ -715,7 +717,7 @@ const HomePage = () => {
               disabled={unlinkingAccount}
               className='w-full mt-3 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2'
             >
-              {unlinkingAccount ? 'Unlinking...' : 'Unlink Bank Account'}
+              {unlinkingAccount ? t('dashboard.unlinking') : t('dashboard.unlinkBankAccount')}
             </button>
           )}
 
@@ -727,7 +729,7 @@ const HomePage = () => {
 
             <div className='flex items-center gap-x-2 sm:gap-x-3'>
               <CgArrowsExchange className='text-blue' />
-              <p className='text-base sm:text-lg font-semibold'>Conversion</p>
+              <p className='text-base sm:text-lg font-semibold'>{t('dashboard.conversion')}</p>
             </div>
 
             <HiDotsHorizontal className='text-blue' />
@@ -736,7 +738,7 @@ const HomePage = () => {
 
           <div className='flex justify-between items-center mt-3 gap-x-3'>
             <div className='flex-1'>
-              <label className='text-xs text-gray'>USD</label>
+              <label className='text-xs text-gray'>{t('dashboard.usd')}</label>
               <input 
                 type="number" 
                 value={usdAmount}
@@ -747,7 +749,7 @@ const HomePage = () => {
             </div>
             <MdCompareArrows className='text-blue text-xl' />
             <div className='flex-1'>
-              <label className='text-xs text-gray'>EUR</label>
+              <label className='text-xs text-gray'>{t('dashboard.eur')}</label>
               <input 
                 type="number" 
                 value={eurAmount}
@@ -761,22 +763,22 @@ const HomePage = () => {
           <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 gap-1'>
             <p className='text-gray text-xs sm:text-sm'>
               {rateLoading 
-                ? 'Loading rate...' 
-                : `Rate = ${exchangeRate?.toFixed(2) || '---'} (${lastUpdated || 'N/A'})`}
+                ? t('dashboard.loadingRate') 
+                : `${t('dashboard.rate')} = ${exchangeRate?.toFixed(2) || '---'} (${lastUpdated || 'N/A'})`}
             </p>
             <button 
               onClick={fetchExchangeRate}
               className='text-xs text-blue hover:underline'
               disabled={rateLoading}
             >
-              {rateLoading ? 'Updating...' : 'Refresh'}
+              {rateLoading ? t('common.loading') : t('common.refresh')}
             </button>
           </div>
 
         </div>
 
         <div className='w-full bg-white rounded-xl p-4 sm:p-5 md:col-span-2 xl:col-span-1'>
-          <h1 className='font-medium text-sm sm:text-base'>Quick Transfer</h1>
+          <h1 className='font-medium text-sm sm:text-base'>{t('dashboard.quickTransfer')}</h1>
           
           {/* Recent contacts/accounts */}
           <div className='flex items-center mt-2 gap-x-2 overflow-x-auto py-2'>
@@ -821,7 +823,7 @@ const HomePage = () => {
             value={quickTransferAmount}
             onChange={(e) => setQuickTransferAmount(e.target.value)}
             className='border border-[#AEB1B4] px-3 py-2 rounded-md outline-none w-full mt-3' 
-            placeholder={isLinked ? 'Enter amount ($)' : 'Link account to transfer'} 
+            placeholder={isLinked ? t('dashboard.enterAmount') : t('dashboard.linkAccountFirst')} 
             disabled={!isLinked}
           />
 
@@ -837,14 +839,14 @@ const HomePage = () => {
                 }
               }}
             >
-              Save as draft
+              {t('dashboard.saveAsDraft')}
             </button>
             <button 
               className='flex-1 bg-blue text-white py-3 rounded-lg hover:bg-blue/90 disabled:opacity-50'
               disabled={sendingTransfer || !isLinked}
               onClick={handleQuickTransfer}
             >
-              {sendingTransfer ? 'Sending...' : 'Send money'}
+              {sendingTransfer ? t('dashboard.sending') : t('dashboard.sendMoney')}
             </button>
           </div>
         </div>

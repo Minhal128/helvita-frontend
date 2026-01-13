@@ -431,6 +431,14 @@ export const cardAPI = {
     return response.json();
   },
 
+  getBillingHistory: async () => {
+    const response = await fetch(`${API_BASE_URL}/card/billing-history`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
   blockCard: async () => {
     const response = await fetch(`${API_BASE_URL}/card/block`, {
       method: "POST",

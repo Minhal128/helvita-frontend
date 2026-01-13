@@ -1,4 +1,77 @@
 {
+    "common": {
+        "loading": "Chargement...",
+        "error": "Erreur",
+        "success": "Succès",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "submit": "Soumettre",
+        "back": "Retour",
+        "next": "Suivant",
+        "confirm": "Confirmer",
+        "warning": "Avertissement",
+        "yes": "Oui",
+        "no": "Non",
+        "logout": "Déconnexion",
+        "menu": "Menu",
+        "search": "Rechercher",
+        "noData": "Aucune donnée disponible",
+        "refresh": "Actualiser"
+    },
+    "sidebar": {
+        "dashboard": "Tableau de bord",
+        "transaction": "Transaction",
+        "account": "Compte",
+        "card": "Carte",
+        "statements": "Relevés",
+        "reserves": "Réserves",
+        "invoices": "Factures",
+        "referral": "Parrainage",
+        "support": "Support",
+        "settings": "Paramètres",
+        "notifications": "Notifications"
+    },
+    "dashboard": {
+        "title": "Tableau de bord",
+        "welcome": "Bienvenue",
+        "myActivity": "Mon Activité",
+        "transactions": "Transactions",
+        "transfer": "Transfert",
+        "conversion": "Conversion",
+        "quickTransfer": "Transfert Rapide",
+        "virtualCard": "Carte Virtuelle",
+        "cardHolder": "Titulaire de la Carte",
+        "expires": "Expire",
+        "status": "Statut",
+        "availableBalance": "Solde disponible",
+        "accounts": "Comptes",
+        "noAccountsLinked": "Aucun compte lié",
+        "myExpense": "Mes dépenses",
+        "noExpenseData": "Aucune donnée de dépense",
+        "linkBankToSeeExpenses": "Liez une banque pour voir les dépenses",
+        "enterAccountNumber": "Entrez le numéro de compte/carte de destination",
+        "amount": "Montant",
+        "transferFrom": "Transfert depuis",
+        "linkAccountToTransfer": "Liez un compte bancaire pour activer les transferts",
+        "linkBankAccount": "Lier un Compte Bancaire",
+        "unlinkBankAccount": "Délier le Compte Bancaire",
+        "linking": "Liaison...",
+        "unlinking": "Déliaison...",
+        "usd": "USD",
+        "eur": "EUR",
+        "loadingRate": "Chargement du taux...",
+        "rate": "Taux",
+        "enterAmount": "Entrez le montant",
+        "linkAccountFirst": "Liez un compte pour transférer",
+        "saveAsDraft": "Enregistrer comme brouillon",
+        "sendMoney": "Envoyer de l'argent",
+        "sending": "Envoi...",
+        "currentBalance": "Solde Actuel",
+        "spent": "Dépensé",
+        "cashback": "Remise"
+    },
     "settings": {
         "title": "Paramètres",
         "accountSettings": "Paramètres du compte",
@@ -21,7 +94,6 @@
         "deleteMyAccount": "Supprimer mon compte",
         "deleteConfirm": "Êtes-vous sûr de vouloir supprimer votre compte? Cette action ne peut pas être annulée.",
         "enterPassword": "Veuillez entrer votre mot de passe pour confirmer:",
-        "cancel": "Annuler",
         "deleting": "Suppression..."
     },
     "account": {
@@ -61,7 +133,11 @@
         "date": "Date",
         "description": "Description",
         "amount": "Montant",
-        "status": "Statut"
+        "status": "Statut",
+        "paid": "Payé",
+        "pending": "En attente",
+        "failed": "Échoué",
+        "loading": "Chargement de l'historique..."
     },
     "languages": {
         "english": "English",
@@ -70,14 +146,66 @@
         "polish": "Polski"
     },
     "cards": {
+        "title": "Cartes",
         "cardName": "Nom de la carte",
         "bank": "Banque",
         "cardNumber": "Numéro de carte",
         "noCards": "Aucune carte liée",
         "linkBank": "Liez un compte bancaire pour voir vos cartes ici",
-        "loading": "Chargement..."
+        "loading": "Chargement...",
+        "addCard": "Ajouter une carte",
+        "blockCard": "Bloquer la carte",
+        "virtualCard": "Carte Virtuelle",
+        "physicalCard": "Carte Physique"
     },
-    "common": {
-        "warning": "Avertissement"
+    "transactions": {
+        "title": "Transactions",
+        "recent": "Transactions Récentes",
+        "all": "Toutes les Transactions",
+        "noTransactions": "Aucune transaction",
+        "income": "Revenu",
+        "expense": "Dépense",
+        "date": "Date",
+        "merchant": "Marchand",
+        "amount": "Montant",
+        "category": "Catégorie"
+    },
+    "statements": {
+        "title": "Relevés",
+        "download": "Télécharger",
+        "monthly": "Relevé Mensuel",
+        "annual": "Relevé Annuel",
+        "noStatements": "Aucun relevé disponible"
+    },
+    "reserves": {
+        "title": "Réserves",
+        "totalReserves": "Réserves Totales",
+        "linkedAccounts": "Comptes Liés",
+        "noReserves": "Aucune donnée de réserve"
+    },
+    "invoices": {
+        "title": "Factures",
+        "create": "Créer une Facture",
+        "noInvoices": "Aucune facture",
+        "invoiceNumber": "Facture #",
+        "dueDate": "Date d'échéance",
+        "total": "Total"
+    },
+    "referral": {
+        "title": "Programme de Parrainage",
+        "inviteFriends": "Inviter des Amis",
+        "yourCode": "Votre Code de Parrainage",
+        "copyCode": "Copier le Code",
+        "totalReferrals": "Total des Parrainages",
+        "pendingRewards": "Récompenses en Attente",
+        "earnedRewards": "Récompenses Gagnées",
+        "enterEmail": "Entrez l'adresse e-mail",
+        "sendInvite": "Envoyer l'Invitation"
+    },
+    "notifications": {
+        "title": "Notifications",
+        "noNotifications": "Aucune notification",
+        "markAllRead": "Tout marquer comme lu",
+        "settings": "Paramètres de Notification"
     }
 }

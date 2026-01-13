@@ -1,4 +1,77 @@
 {
+    "common": {
+        "loading": "Загрузка...",
+        "error": "Ошибка",
+        "success": "Успешно",
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "delete": "Удалить",
+        "edit": "Редактировать",
+        "submit": "Отправить",
+        "back": "Назад",
+        "next": "Далее",
+        "confirm": "Подтвердить",
+        "warning": "Предупреждение",
+        "yes": "Да",
+        "no": "Нет",
+        "logout": "Выйти",
+        "menu": "Меню",
+        "search": "Поиск",
+        "noData": "Нет данных",
+        "refresh": "Обновить"
+    },
+    "sidebar": {
+        "dashboard": "Панель управления",
+        "transaction": "Транзакция",
+        "account": "Счёт",
+        "card": "Карта",
+        "statements": "Выписки",
+        "reserves": "Резервы",
+        "invoices": "Счета-фактуры",
+        "referral": "Рефералы",
+        "support": "Поддержка",
+        "settings": "Настройки",
+        "notifications": "Уведомления"
+    },
+    "dashboard": {
+        "title": "Панель управления",
+        "welcome": "Добро пожаловать",
+        "myActivity": "Моя Активность",
+        "transactions": "Транзакции",
+        "transfer": "Перевод",
+        "conversion": "Конвертация",
+        "quickTransfer": "Быстрый Перевод",
+        "virtualCard": "Виртуальная Карта",
+        "cardHolder": "Владелец Карты",
+        "expires": "Срок действия",
+        "status": "Статус",
+        "availableBalance": "Доступный баланс",
+        "accounts": "Счета",
+        "noAccountsLinked": "Нет привязанных счетов",
+        "myExpense": "Мои расходы",
+        "noExpenseData": "Нет данных о расходах",
+        "linkBankToSeeExpenses": "Привяжите банк для просмотра расходов",
+        "enterAccountNumber": "Введите номер счёта/карты получателя",
+        "amount": "Сумма",
+        "transferFrom": "Перевод с",
+        "linkAccountToTransfer": "Привяжите банковский счёт для переводов",
+        "linkBankAccount": "Привязать Банковский Счёт",
+        "unlinkBankAccount": "Отвязать Банковский Счёт",
+        "linking": "Привязка...",
+        "unlinking": "Отвязка...",
+        "usd": "USD",
+        "eur": "EUR",
+        "loadingRate": "Загрузка курса...",
+        "rate": "Курс",
+        "enterAmount": "Введите сумму",
+        "linkAccountFirst": "Сначала привяжите счёт",
+        "saveAsDraft": "Сохранить как черновик",
+        "sendMoney": "Отправить деньги",
+        "sending": "Отправка...",
+        "currentBalance": "Текущий Баланс",
+        "spent": "Потрачено",
+        "cashback": "Кэшбэк"
+    },
     "settings": {
         "title": "Настройки",
         "accountSettings": "Настройки аккаунта",
@@ -21,7 +94,6 @@
         "deleteMyAccount": "Удалить мой аккаунт",
         "deleteConfirm": "Вы уверены, что хотите удалить свой аккаунт? Это действие нельзя отменить.",
         "enterPassword": "Пожалуйста, введите пароль для подтверждения:",
-        "cancel": "Отмена",
         "deleting": "Удаление..."
     },
     "account": {
@@ -61,7 +133,11 @@
         "date": "Дата",
         "description": "Описание",
         "amount": "Сумма",
-        "status": "Статус"
+        "status": "Статус",
+        "paid": "Оплачено",
+        "pending": "В ожидании",
+        "failed": "Неудачно",
+        "loading": "Загрузка истории..."
     },
     "languages": {
         "english": "English",
@@ -70,14 +146,66 @@
         "polish": "Polski"
     },
     "cards": {
+        "title": "Карты",
         "cardName": "Название карты",
         "bank": "Банк",
         "cardNumber": "Номер карты",
         "noCards": "Карты не привязаны",
         "linkBank": "Привяжите банковский счет, чтобы увидеть ваши карты здесь",
-        "loading": "Загрузка..."
+        "loading": "Загрузка...",
+        "addCard": "Добавить карту",
+        "blockCard": "Заблокировать карту",
+        "virtualCard": "Виртуальная Карта",
+        "physicalCard": "Физическая Карта"
     },
-    "common": {
-        "warning": "Предупреждение"
+    "transactions": {
+        "title": "Транзакции",
+        "recent": "Недавние Транзакции",
+        "all": "Все Транзакции",
+        "noTransactions": "Нет транзакций",
+        "income": "Доход",
+        "expense": "Расход",
+        "date": "Дата",
+        "merchant": "Продавец",
+        "amount": "Сумма",
+        "category": "Категория"
+    },
+    "statements": {
+        "title": "Выписки",
+        "download": "Скачать",
+        "monthly": "Месячная Выписка",
+        "annual": "Годовая Выписка",
+        "noStatements": "Нет доступных выписок"
+    },
+    "reserves": {
+        "title": "Резервы",
+        "totalReserves": "Всего Резервов",
+        "linkedAccounts": "Привязанные Счета",
+        "noReserves": "Нет данных о резервах"
+    },
+    "invoices": {
+        "title": "Счета-фактуры",
+        "create": "Создать Счёт",
+        "noInvoices": "Нет счетов-фактур",
+        "invoiceNumber": "Счёт #",
+        "dueDate": "Срок оплаты",
+        "total": "Итого"
+    },
+    "referral": {
+        "title": "Реферальная Программа",
+        "inviteFriends": "Пригласить Друзей",
+        "yourCode": "Ваш Реферальный Код",
+        "copyCode": "Скопировать Код",
+        "totalReferrals": "Всего Рефералов",
+        "pendingRewards": "Ожидающие Награды",
+        "earnedRewards": "Заработанные Награды",
+        "enterEmail": "Введите email",
+        "sendInvite": "Отправить Приглашение"
+    },
+    "notifications": {
+        "title": "Уведомления",
+        "noNotifications": "Нет уведомлений",
+        "markAllRead": "Отметить все как прочитанные",
+        "settings": "Настройки Уведомлений"
     }
 }

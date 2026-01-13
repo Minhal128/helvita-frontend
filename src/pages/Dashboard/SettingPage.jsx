@@ -4,7 +4,7 @@ import { HiDotsVertical } from 'react-icons/hi'
 import { IoShield } from 'react-icons/io5'
 import { LuLanguages } from 'react-icons/lu'
 import { MdEmail, MdPrivacyTip } from 'react-icons/md'
-import { authAPI } from '../../services/api'
+import { authAPI, cardAPI } from '../../services/api'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -26,6 +26,7 @@ const SettingPage = () => {
     const [selectedLanguage, setSelectedLanguage] = useState(localStorage.getItem('language') || 'en')
     const [billingHistory, setBillingHistory] = useState([])
     const [showBillingHistory, setShowBillingHistory] = useState(false)
+    const [billingLoading, setBillingLoading] = useState(false)
 
     useEffect(() => {
         fetchData()
@@ -56,14 +57,22 @@ const SettingPage = () => {
         toast.success(t('settings.language') + ' updated!')
     }
 
-    const handleViewBillingHistory = () => {
+    const handleViewBillingHistory = async () => {
         setShowBillingHistory(true)
-        // Fetch billing history - mock data for now
-        setBillingHistory([
-            { id: 1, date: '2024-01-10', description: 'Monthly Subscription', amount: '$9.99', status: 'Paid' },
-            { id: 2, date: '2024-02-10', description: 'Monthly Subscription', amount: '$9.99', status: 'Paid' },
-            { id: 3, date: '2024-03-10', description: 'Monthly Subscription', amount: '$9.99', status: 'Pending' },
-        ])
+        setBillingLoading(true)
+        try {
+            const response = await cardAPI.getBillingHistory()
+            if (response && !response.error) {
+                setBillingHistory(response.billingHistory || [])
+            } else {
+                toast.error(response.error || 'Failed to load billing history')
+            }
+        } catch (error) {
+            console.error('Error fetching billing history:', error)
+            toast.error('Failed to load billing history')
+        } finally {
+            setBillingLoading(false)
+        }
     }
 
     const handleUpdateEmail = () => {
@@ -303,7 +312,12 @@ const SettingPage = () => {
                                         ) : (
                                             <div>
                                                 <h2 className='text-lg font-semibold mb-4'>{t('billing.title')}</h2>
-                                                {billingHistory.length > 0 ? (
+                                                {billingLoading ? (
+                                                    <div className="text-center py-8 text-gray-500">
+                                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue mx-auto mb-2"></div>
+                                                        <p>{t('billing.loading')}</p>
+                                                    </div>
+                                                ) : billingHistory.length > 0 ? (
                                                     <table className="min-w-full border-collapse border border-[#F4F6F9]">
                                                         <thead className="bg-gray-50 border border-[#F4F6F9]">
                                                             <tr>
@@ -320,8 +334,14 @@ const SettingPage = () => {
                                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.description}</td>
                                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.amount}</td>
                                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                                        <span className={`px-2 py-1 text-xs rounded-full ${item.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                                                                            {item.status}
+                                                                        <span className={`px-2 py-1 text-xs rounded-full ${
+                                                                            item.status === 'Paid' || item.status === 'paid' 
+                                                                                ? 'bg-green-100 text-green-800' 
+                                                                                : item.status === 'Failed' || item.status === 'failed'
+                                                                                    ? 'bg-red-100 text-red-800'
+                                                                                    : 'bg-yellow-100 text-yellow-800'
+                                                                        }`}>
+                                                                            {t(`billing.${item.status.toLowerCase()}`) || item.status}
                                                                         </span>
                                                                     </td>
                                                                 </tr>

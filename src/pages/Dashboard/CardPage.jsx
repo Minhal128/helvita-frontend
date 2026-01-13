@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import PieImage from '../../assets/dashboard/pie.svg'
 import { IoIosCard } from "react-icons/io";
 import { TiCancel } from "react-icons/ti";
@@ -10,6 +11,7 @@ import toast from 'react-hot-toast';
 
 const CardPage = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [cards, setCards] = useState([]);
     const [accounts, setAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -123,7 +125,7 @@ const CardPage = () => {
             <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="flex justify-between items-start">
                     <div>
-                        <p className="text-xs text-white/70">{isPrimary ? 'Virtual Card' : 'Secondary'}</p>
+                        <p className="text-xs text-white/70">{isPrimary ? t('cards.virtualCard') : t('cards.physicalCard')}</p>
                         <p className="text-sm font-medium">Helvita</p>
                     </div>
                     <div className="flex space-x-1">
@@ -140,19 +142,19 @@ const CardPage = () => {
                 
                 <div className="flex justify-between items-end">
                     <div>
-                        <p className="text-xs text-white/70">Card Holder</p>
+                        <p className="text-xs text-white/70">{t('dashboard.cardHolder')}</p>
                         <p className="text-sm font-medium uppercase">
                             {card?.cardholderName || profile?.cardHolderName || profile?.nameOnCard || profile?.fullName || 'CARD HOLDER'}
                         </p>
                     </div>
                     <div>
-                        <p className="text-xs text-white/70">Expires</p>
+                        <p className="text-xs text-white/70">{t('dashboard.expires')}</p>
                         <p className="text-sm font-medium">
                             {card ? formatExpiry(card.expMonth, card.expYear) : 'MM/YY'}
                         </p>
                     </div>
                     <div className="text-right">
-                        <p className="text-xs text-white/70">Status</p>
+                        <p className="text-xs text-white/70">{t('dashboard.status')}</p>
                         <p className="text-xs font-medium capitalize">
                             {card?.status || 'N/A'}
                         </p>
@@ -167,7 +169,7 @@ const CardPage = () => {
             <div className='flex-1 flex items-center justify-center m-5'>
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue mx-auto mb-4"></div>
-                    <p className="text-gray">Loading cards...</p>
+                    <p className="text-gray">{t('cards.loading')}</p>
                 </div>
             </div>
         );

@@ -1,4 +1,77 @@
 {
+    "common": {
+        "loading": "Ładowanie...",
+        "error": "Błąd",
+        "success": "Sukces",
+        "save": "Zapisz",
+        "cancel": "Anuluj",
+        "delete": "Usuń",
+        "edit": "Edytuj",
+        "submit": "Wyślij",
+        "back": "Wstecz",
+        "next": "Dalej",
+        "confirm": "Potwierdź",
+        "warning": "Ostrzeżenie",
+        "yes": "Tak",
+        "no": "Nie",
+        "logout": "Wyloguj",
+        "menu": "Menu",
+        "search": "Szukaj",
+        "noData": "Brak danych",
+        "refresh": "Odśwież"
+    },
+    "sidebar": {
+        "dashboard": "Panel główny",
+        "transaction": "Transakcja",
+        "account": "Konto",
+        "card": "Karta",
+        "statements": "Wyciągi",
+        "reserves": "Rezerwy",
+        "invoices": "Faktury",
+        "referral": "Polecenia",
+        "support": "Wsparcie",
+        "settings": "Ustawienia",
+        "notifications": "Powiadomienia"
+    },
+    "dashboard": {
+        "title": "Panel główny",
+        "welcome": "Witaj",
+        "myActivity": "Moja Aktywność",
+        "transactions": "Transakcje",
+        "transfer": "Przelew",
+        "conversion": "Konwersja",
+        "quickTransfer": "Szybki Przelew",
+        "virtualCard": "Karta Wirtualna",
+        "cardHolder": "Posiadacz Karty",
+        "expires": "Wygasa",
+        "status": "Status",
+        "availableBalance": "Dostępne saldo",
+        "accounts": "Konta",
+        "noAccountsLinked": "Brak powiązanych kont",
+        "myExpense": "Moje wydatki",
+        "noExpenseData": "Brak danych o wydatkach",
+        "linkBankToSeeExpenses": "Połącz bank, aby zobaczyć wydatki",
+        "enterAccountNumber": "Wprowadź numer konta/karty odbiorcy",
+        "amount": "Kwota",
+        "transferFrom": "Przelew z",
+        "linkAccountToTransfer": "Połącz konto bankowe, aby aktywować przelewy",
+        "linkBankAccount": "Połącz Konto Bankowe",
+        "unlinkBankAccount": "Odłącz Konto Bankowe",
+        "linking": "Łączenie...",
+        "unlinking": "Odłączanie...",
+        "usd": "USD",
+        "eur": "EUR",
+        "loadingRate": "Ładowanie kursu...",
+        "rate": "Kurs",
+        "enterAmount": "Wprowadź kwotę",
+        "linkAccountFirst": "Najpierw połącz konto",
+        "saveAsDraft": "Zapisz jako wersję roboczą",
+        "sendMoney": "Wyślij pieniądze",
+        "sending": "Wysyłanie...",
+        "currentBalance": "Bieżące Saldo",
+        "spent": "Wydano",
+        "cashback": "Zwrot"
+    },
     "settings": {
         "title": "Ustawienia",
         "accountSettings": "Ustawienia konta",
@@ -21,7 +94,6 @@
         "deleteMyAccount": "Usuń moje konto",
         "deleteConfirm": "Czy na pewno chcesz usunąć swoje konto? Tej akcji nie można cofnąć.",
         "enterPassword": "Proszę wprowadzić hasło, aby potwierdzić:",
-        "cancel": "Anuluj",
         "deleting": "Usuwanie..."
     },
     "account": {
@@ -61,7 +133,11 @@
         "date": "Data",
         "description": "Opis",
         "amount": "Kwota",
-        "status": "Status"
+        "status": "Status",
+        "paid": "Opłacone",
+        "pending": "Oczekujące",
+        "failed": "Nieudane",
+        "loading": "Ładowanie historii..."
     },
     "languages": {
         "english": "English",
@@ -70,14 +146,66 @@
         "polish": "Polski"
     },
     "cards": {
+        "title": "Karty",
         "cardName": "Nazwa karty",
         "bank": "Bank",
         "cardNumber": "Numer karty",
         "noCards": "Brak powiązanych kart",
         "linkBank": "Połącz konto bankowe, aby zobaczyć swoje karty tutaj",
-        "loading": "Ładowanie..."
+        "loading": "Ładowanie...",
+        "addCard": "Dodaj kartę",
+        "blockCard": "Zablokuj kartę",
+        "virtualCard": "Karta Wirtualna",
+        "physicalCard": "Karta Fizyczna"
     },
-    "common": {
-        "warning": "Ostrzeżenie"
+    "transactions": {
+        "title": "Transakcje",
+        "recent": "Ostatnie Transakcje",
+        "all": "Wszystkie Transakcje",
+        "noTransactions": "Brak transakcji",
+        "income": "Przychód",
+        "expense": "Wydatek",
+        "date": "Data",
+        "merchant": "Sprzedawca",
+        "amount": "Kwota",
+        "category": "Kategoria"
+    },
+    "statements": {
+        "title": "Wyciągi",
+        "download": "Pobierz",
+        "monthly": "Wyciąg Miesięczny",
+        "annual": "Wyciąg Roczny",
+        "noStatements": "Brak dostępnych wyciągów"
+    },
+    "reserves": {
+        "title": "Rezerwy",
+        "totalReserves": "Suma Rezerw",
+        "linkedAccounts": "Powiązane Konta",
+        "noReserves": "Brak danych o rezerwach"
+    },
+    "invoices": {
+        "title": "Faktury",
+        "create": "Utwórz Fakturę",
+        "noInvoices": "Brak faktur",
+        "invoiceNumber": "Faktura #",
+        "dueDate": "Termin płatności",
+        "total": "Suma"
+    },
+    "referral": {
+        "title": "Program Poleceń",
+        "inviteFriends": "Zaproś Znajomych",
+        "yourCode": "Twój Kod Polecający",
+        "copyCode": "Skopiuj Kod",
+        "totalReferrals": "Suma Poleceń",
+        "pendingRewards": "Oczekujące Nagrody",
+        "earnedRewards": "Zdobyte Nagrody",
+        "enterEmail": "Wprowadź email",
+        "sendInvite": "Wyślij Zaproszenie"
+    },
+    "notifications": {
+        "title": "Powiadomienia",
+        "noNotifications": "Brak powiadomień",
+        "markAllRead": "Oznacz wszystkie jako przeczytane",
+        "settings": "Ustawienia Powiadomień"
     }
 }
