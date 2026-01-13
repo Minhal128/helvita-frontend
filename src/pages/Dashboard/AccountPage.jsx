@@ -9,7 +9,8 @@ const AccountPage = () => {
     const { t } = useTranslation();
     const [accountData, setAccountData] = useState({
         holder: 'Loading...',
-        accountNumber: '****-****-**',
+        accountNumber: 'N/A',
+        fullAccountNumber: null,
         type: '-',
         currency: 'USD'
     });
@@ -17,6 +18,8 @@ const AccountPage = () => {
     const [spent, setSpent] = useState(0);
     const [transactionCount, setTransactionCount] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [isPlaidConnected, setIsPlaidConnected] = useState(false);
+    const [showFullAccountNumber, setShowFullAccountNumber] = useState(false);
 
     useEffect(() => {
         fetchAccountData();
@@ -41,12 +44,25 @@ const AccountPage = () => {
                               user.email?.split('@')[0] || 
                               'N/A';
             
+            // Check if Plaid account is connected (has accounts)
+            const hasPlaidAccount = reserveRes.accounts && reserveRes.accounts.length > 0;
+            const plaidAccount = hasPlaidAccount ? reserveRes.accounts[0] : null;
+            setIsPlaidConnected(hasPlaidAccount);
+            
+            // Get the full account number if available (account_id from Plaid)
+            const fullAccNumber = plaidAccount?.accountId || null;
+            const maskNumber = plaidAccount?.mask || (plaidAccount?.accountId ? plaidAccount.accountId.slice(-4) : null);
+            
             setAccountData({
                 holder: holderName,
-                accountNumber: reserveRes.accounts?.[0]?.mask ? 
-                    `****-****-${reserveRes.accounts[0].mask}` : '****-****-**',
-                type: reserveRes.accounts?.[0]?.subtype || reserveRes.accounts?.[0]?.type || 'Checking',
-                currency: reserveRes.accounts?.[0]?.currency || 'USD'
+                // Show N/A if no Plaid account connected, otherwise show masked account number
+                accountNumber: hasPlaidAccount && maskNumber ? 
+                    `****-****-${maskNumber}` : 'N/A',
+                fullAccountNumber: fullAccNumber,
+                type: hasPlaidAccount ? 
+                    (plaidAccount?.subtype || plaidAccount?.type || 'Checking') : '-',
+                currency: hasPlaidAccount ? 
+                    (plaidAccount?.currency || 'USD') : 'USD'
             });
 
             // Set balance
@@ -105,7 +121,15 @@ const AccountPage = () => {
                         </div>
                         <div className='flex items-center justify-between mt-1'>
                             <p className='text-gray text-sm'>{t('account.accountNumber')}</p>
-                            <p className='font-semibold text-xs sm:text-sm'>{accountData.accountNumber}</p>
+                            <p 
+                                className={`font-semibold text-xs sm:text-sm ${isPlaidConnected ? 'cursor-pointer hover:text-blue select-none' : ''}`}
+                                onClick={() => isPlaidConnected && setShowFullAccountNumber(!showFullAccountNumber)}
+                                title={isPlaidConnected ? (showFullAccountNumber ? 'Click to hide' : 'Click to reveal') : ''}
+                            >
+                                {showFullAccountNumber && accountData.fullAccountNumber 
+                                    ? accountData.fullAccountNumber 
+                                    : accountData.accountNumber}
+                            </p>
                         </div>
                         <div className='flex items-center justify-between mt-1'>
                             <p className='text-gray text-sm'>{t('account.accountType')}</p>
