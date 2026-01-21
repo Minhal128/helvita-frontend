@@ -23,6 +23,8 @@ import ReferalPage from './pages/Dashboard/ReferalPage';
 import DashboardSupportPage from './pages/Dashboard/SupportPage';
 import NotificationPage from './pages/Dashboard/NotificationPage';
 import SettingPage from './pages/Dashboard/SettingPage';
+import CurrencyPage from './pages/Dashboard/CurrencyPage';
+import CurrencyAccountPage from './pages/Dashboard/CurrencyAccountPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import SSOCallbackPage from './pages/Auth/SSOCallbackPage';
 
@@ -77,6 +79,8 @@ function App() {
             
             <Route path="/dashboard/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
               <Route path="home" element={<HomePage />} />
+              <Route path="currency" element={<CurrencyPage />} />
+              <Route path="currency/:accountId" element={<CurrencyAccountPage />} />
               <Route path="transaction" element={<TransactionPage />} />
               <Route path="account" element={<AccountPage />} />
               <Route path="card" element={<CardPage />} />

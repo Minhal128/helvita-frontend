@@ -4,6 +4,7 @@ import { FaFileInvoiceDollar, FaTv } from "react-icons/fa6";
 import { GoCrossReference } from "react-icons/go";
 import { IoCardSharp } from "react-icons/io5";
 import { GrDocumentText, GrTransaction } from "react-icons/gr";
+import { HiCurrencyDollar } from "react-icons/hi2";
 
 
 export const navData = [
@@ -12,6 +13,12 @@ export const navData = [
         link: "home",
         nameKey: "sidebar.dashboard",
         icon: <RiHome5Fill />
+    },
+    {
+        id: 2,
+        link: "currency",
+        nameKey: "sidebar.currency",
+        icon: <HiCurrencyDollar />
     },
     {
         id: 7,

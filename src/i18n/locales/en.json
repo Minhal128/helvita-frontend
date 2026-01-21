@@ -22,6 +22,7 @@
     },
     "sidebar": {
         "dashboard": "Dashboard",
+        "currency": "Multi-Currency",
         "transaction": "Transaction",
         "account": "Account",
         "card": "Card",

@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  import.meta.env.VITE_API_URL || "https://helvitabackend.vercel.app/api";
 
 const getHeaders = () => {
   const token = localStorage.getItem("token");
@@ -516,6 +516,158 @@ export const supportAPI = {
       method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ emails }),
+    });
+    return response.json();
+  },
+};
+
+// Currency APIs
+export const currencyAPI = {
+  // Get all currency accounts for user
+  getAccounts: async () => {
+    const response = await fetch(`${API_BASE_URL}/currency/accounts`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  // Create new currency account
+  createAccount: async (currency) => {
+    console.log('Creating currency account with:', { currency });
+    const response = await fetch(`${API_BASE_URL}/currency/accounts`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ currency: currency.toUpperCase() }),
+    });
+    const data = await response.json();
+    console.log('Create account response:', data);
+    return data;
+  },
+
+  // Get specific currency account
+  getAccount: async (accountId) => {
+    const response = await fetch(`${API_BASE_URL}/currency/accounts/${accountId}`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  // Get transaction history for account
+  getTransactions: async (accountId, page = 1, limit = 20) => {
+    const params = new URLSearchParams({ page: page.toString(), limit: limit.toString() });
+    const response = await fetch(`${API_BASE_URL}/currency/accounts/${accountId}/transactions?${params}`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  // Get supported currencies
+  getSupportedCurrencies: async () => {
+    const response = await fetch(`${API_BASE_URL}/currency/supported`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  // Get dashboard data
+  getDashboard: async () => {
+    const response = await fetch(`${API_BASE_URL}/currency/dashboard`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  // Test deposit (for development/testing)
+  deposit: async (accountId, amount, description = 'Test deposit') => {
+    const response = await fetch(`${API_BASE_URL}/currency/accounts/${accountId}/deposit`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ amount, description }),
+    });
+    return response.json();
+  },
+
+  // Test withdrawal (for development/testing)
+  withdraw: async (accountId, amount, description = 'Test withdrawal') => {
+    const response = await fetch(`${API_BASE_URL}/currency/accounts/${accountId}/withdraw`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ amount, description }),
+    });
+    return response.json();
+  },
+
+  // Test API connection
+  test: async () => {
+    const response = await fetch(`${API_BASE_URL}/currency/test`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  // Fund currency account from bank
+  fundFromBank: async (accountId, amount, description = 'Bank transfer') => {
+    const response = await fetch(`${API_BASE_URL}/currency/accounts/${accountId}/fund-from-bank`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ amount, description }),
+    });
+    return response.json();
+  },
+
+  // Withdraw to bank
+  withdrawToBank: async (accountId, amount, description = 'Bank withdrawal') => {
+    const response = await fetch(`${API_BASE_URL}/currency/accounts/${accountId}/withdraw-to-bank`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ amount, description }),
+    });
+    return response.json();
+  },
+
+  // Exchange between currencies
+  exchangeCurrency: async (fromAccountId, toAccountId, amount) => {
+    console.log('Exchanging currency:', { fromAccountId, toAccountId, amount });
+    const response = await fetch(`${API_BASE_URL}/currency/exchange`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ fromAccountId, toAccountId, amount }),
+    });
+    const data = await response.json();
+    console.log('Exchange response:', data);
+    return data;
+  },
+
+  // Get exchange rate
+  getExchangeRate: async (from, to, amount = 1) => {
+    const params = new URLSearchParams({ from, to, amount: amount.toString() });
+    const response = await fetch(`${API_BASE_URL}/currency/exchange-rate?${params}`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  // Get bank info
+  getBankInfo: async () => {
+    const response = await fetch(`${API_BASE_URL}/currency/bank-info`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  // Sync USD account with Plaid balance
+  syncWithPlaid: async () => {
+    const response = await fetch(`${API_BASE_URL}/currency/sync-plaid`, {
+      method: "POST",
+      headers: getHeaders(),
     });
     return response.json();
   },
