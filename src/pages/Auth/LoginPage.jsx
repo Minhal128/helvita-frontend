@@ -90,6 +90,8 @@ const LoginPage = () => {
     [nav],
   );
 
+  const [googleReady, setGoogleReady] = useState(false);
+
   const initializeGoogleSignIn = useCallback(() => {
     if (window.google) {
       window.google.accounts.id.initialize({
@@ -97,19 +99,33 @@ const LoginPage = () => {
           "238748490522-kgllsq9c52d05qcblsluchatii27cbn0.apps.googleusercontent.com",
         callback: handleGoogleSignIn,
       });
+      
+      // Render the hidden Google button for reliable sign-in
+      const buttonDiv = document.getElementById("google-signin-button");
+      if (buttonDiv) {
+        window.google.accounts.id.renderButton(buttonDiv, {
+          type: "standard",
+          theme: "outline",
+          size: "large",
+          width: "100%",
+        });
+      }
+      setGoogleReady(true);
     }
   }, [handleGoogleSignIn]);
 
   const triggerGoogleSignIn = () => {
-    if (window.google) {
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // One Tap not displayed, show manual picker
-          window.google.accounts.id.prompt();
-        }
-      });
+    if (window.google && googleReady) {
+      // Click the hidden Google button
+      const googleBtn = document.querySelector("#google-signin-button div[role='button']");
+      if (googleBtn) {
+        googleBtn.click();
+      } else {
+        // Fallback to prompt
+        window.google.accounts.id.prompt();
+      }
     } else {
-      toast.error("Google Sign-In is not available");
+      toast.error("Google Sign-In is not available yet. Please wait...");
     }
   };
 
@@ -188,10 +204,14 @@ const LoginPage = () => {
           <p className="text-gray mt-1 text-sm sm:text-base text-center">Log in to access your account</p>
 
           <div className="mt-5 w-full flex flex-col gap-2">
+            {/* Hidden Google button for reliable OAuth */}
+            <div id="google-signin-button" className="hidden"></div>
+            
             <button
               type="button"
               onClick={triggerGoogleSignIn}
-              className="w-full bg-[#F4F4FF] py-3 rounded-md text-sm cursor-pointer font-medium flex items-center justify-center gap-2"
+              disabled={!googleReady}
+              className="w-full bg-[#F4F4FF] py-3 rounded-md text-sm cursor-pointer font-medium flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
