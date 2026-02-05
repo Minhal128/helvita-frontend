@@ -107,7 +107,7 @@ const LoginPage = () => {
           type: "standard",
           theme: "outline",
           size: "large",
-          width: "100%",
+          width: 350,
         });
       }
       setGoogleReady(true);
