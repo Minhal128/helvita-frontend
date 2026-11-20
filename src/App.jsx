@@ -27,6 +27,8 @@ import CurrencyPage from './pages/Dashboard/CurrencyPage';
 import CurrencyAccountPage from './pages/Dashboard/CurrencyAccountPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import SSOCallbackPage from './pages/Auth/SSOCallbackPage';
+import AdminLoginPage from './pages/Auth/Admin/AdminLoginPage';
+import AdminDashboardPage from './pages/Auth/Admin/AdminDashboardPage';
 
 const RegisterPage = lazy(() => import('./pages/Auth/RegisterPage'));
 const Layout = lazy(() => import('./components/dashboard/Layout'));
@@ -75,6 +77,8 @@ function App() {
             <Route path='/reset-password' element={<ResetPasswordPage />} />
             <Route path='/register' element={<RegisterPage />} />
             <Route path='/sso-callback' element={<SSOCallbackPage />} />
+            <Route path='/admin/login' element={<AdminLoginPage />} />
+            <Route path='/admin/dashboard' element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
 
             
             <Route path="/dashboard/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>

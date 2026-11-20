@@ -1,25 +1,35 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthenticateWithRedirectCallback, useUser } from "@clerk/clerk-react";
+import { AuthenticateWithRedirectCallback, useAuth, useUser } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
+import { authAPI } from "../../services/api";
 
 const SSOCallbackPage = () => {
   const { user, isLoaded } = useUser();
+  const { getToken } = useAuth();
   const nav = useNavigate();
+  const exchanged = useRef(false);
 
   useEffect(() => {
-    if (isLoaded && user) {
-      // Store user info in localStorage for your app
-      localStorage.removeItem("token");
-      localStorage.removeItem("accountId");
+    if (!isLoaded || !user || exchanged.current) return;
+    exchanged.current = true;
+
+    (async () => {
+      // Trade the Clerk session for our own API token (same storage as Google login)
+      const result = await authAPI.clerkLogin(await getToken()).catch(() => ({ error: "Apple sign-in failed" }));
+      if (result.error || !result.token) {
+        toast.error(result.error || "Apple sign-in failed");
+        nav("/login");
+        return;
+      }
+
       localStorage.removeItem("user");
       localStorage.removeItem("registerEmail");
-      localStorage.removeItem("accountType");
       localStorage.removeItem("password");
-
-      // Store Clerk session info
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("accountId", result.accountId || "");
+      localStorage.setItem("accountType", result.accountType || "business");
       localStorage.setItem("clerkUserId", user.id);
-      localStorage.setItem("accountType", "business");
       localStorage.setItem("userEmail", user.primaryEmailAddress?.emailAddress || "");
 
       toast.success("Apple Sign-in successful!");
@@ -30,8 +40,8 @@ const SSOCallbackPage = () => {
         console.warn('Could not set businessSetupStep in localStorage', e);
       }
       nav("/business/setup");
-    }
-  }, [isLoaded, user, nav]);
+    })();
+  }, [isLoaded, user, getToken, nav]);
 
   return (
     <AuthenticateWithRedirectCallback

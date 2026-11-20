@@ -3,7 +3,8 @@ import { IoIosCard } from 'react-icons/io'
 import { PlusCircle, ArrowUpRight, CheckCircle, XCircle, Clock } from 'lucide-react'; // Import icons
 import { FaCalendar, FaPlus } from 'react-icons/fa'
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { authAPI } from '../../services/api';
+import { cardAPI } from '../../services/api';
+import toast from 'react-hot-toast';
 
 const InvoicesPage = () => {
     const [invoices, setInvoices] = useState([]);
@@ -14,6 +15,29 @@ const InvoicesPage = () => {
         overdue: 0
     });
     const [loading, setLoading] = useState(true);
+    const [showCreate, setShowCreate] = useState(false);
+    const [creating, setCreating] = useState(false);
+    const [form, setForm] = useState({ customerName: '', customerEmail: '', amount: '', description: '' });
+
+    const handleCreateInvoice = async (e) => {
+        e.preventDefault();
+        setCreating(true);
+        try {
+            const response = await cardAPI.createInvoice({ ...form, amount: parseFloat(form.amount) });
+            if (response.error) {
+                toast.error(response.error);
+                return;
+            }
+            toast.success(`Invoice ${response.invoice.invoiceNumber} created`);
+            setForm({ customerName: '', customerEmail: '', amount: '', description: '' });
+            setShowCreate(false);
+            fetchInvoices();
+        } catch {
+            toast.error('Failed to create invoice');
+        } finally {
+            setCreating(false);
+        }
+    };
 
     useEffect(() => {
         fetchInvoices();
@@ -22,11 +46,9 @@ const InvoicesPage = () => {
     const fetchInvoices = async () => {
         try {
             setLoading(true);
-            // Try to get profile which may have invoices
-            const response = await authAPI.getProfile().catch(() => ({ profile: {} }));
-            
-            // If invoices exist in the response, use them; otherwise show empty state
-            const invoiceData = response.profile?.invoices || [];
+            const response = await cardAPI.listInvoices();
+            if (response.error) toast.error(response.error);
+            const invoiceData = response.invoices || [];
             setInvoices(invoiceData);
 
             // Calculate summary
@@ -134,11 +156,24 @@ const InvoicesPage = () => {
                         <p className='mr-2'>{new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
                         <FaCalendar className="ml-1 w-4 h-4 text-blue" />
                     </div>
-                    <button onClick={fetchInvoices} className="bg-blue text-white py-2 px-4 rounded flex items-center">
-                        <FaPlus className="mr-2" />
-                        <p>Refresh</p>
-                    </button>
+                    <div className="flex gap-2">
+                        <button onClick={fetchInvoices} className="bg-[#F4F6F9] text-blue py-2 px-4 rounded">Refresh</button>
+                        <button onClick={() => setShowCreate((v) => !v)} className="bg-blue text-white py-2 px-4 rounded flex items-center">
+                            <FaPlus className="mr-2" />
+                            <p>New invoice</p>
+                        </button>
+                    </div>
                 </div>
+
+                {showCreate && (
+                    <form onSubmit={handleCreateInvoice} className="mb-6 flex flex-wrap gap-2 items-end bg-[#F4F6F9] p-4 rounded-md">
+                        <input required placeholder="Customer name" value={form.customerName} onChange={(e) => setForm({ ...form, customerName: e.target.value })} className="px-3 py-2 rounded-md border border-[#dadada] flex-1 min-w-[10rem]" />
+                        <input required type="email" placeholder="Customer email" value={form.customerEmail} onChange={(e) => setForm({ ...form, customerEmail: e.target.value })} className="px-3 py-2 rounded-md border border-[#dadada] flex-1 min-w-[12rem]" />
+                        <input required type="number" min="0.01" step="0.01" placeholder="Amount (USD)" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} className="px-3 py-2 rounded-md border border-[#dadada] w-[9rem]" />
+                        <input placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="px-3 py-2 rounded-md border border-[#dadada] flex-1 min-w-[10rem]" />
+                        <button type="submit" disabled={creating} className="bg-blue text-white py-2 px-4 rounded disabled:opacity-60">{creating ? 'Creating...' : 'Create'}</button>
+                    </form>
+                )}
 
                 <div className="overflow-x-auto">
                     {invoices.length === 0 ? (
@@ -165,16 +200,18 @@ const InvoicesPage = () => {
                                         <div className="flex items-center">{getStatusIcon(invoice.status)}<span className="ml-2 text-sm text-gray-900">{invoice.invoiceNumber || `#INV-${String(index + 1).padStart(3, '0')}`}</span></div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invoice.customerName || 'N/A'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center">
-                                            <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getTypeColor(invoice.status)}`}>
-                                                {invoice.status}
-                                            </span>
-                                        </div>
-                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invoice.issueDate || '-'}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invoice.dueDate || '-'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invoice.status}</td>
-                                    <td className="px-6 py-3 flex justify-center items-center"><HiOutlineDotsVertical /></td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getTypeColor(invoice.status)}`}>
+                                            {invoice.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-3 flex justify-center items-center">
+                                        {invoice.hostedUrl
+                                            ? <a href={invoice.hostedUrl} target="_blank" rel="noreferrer" title="Open payable invoice" className="text-blue"><HiOutlineDotsVertical /></a>
+                                            : <HiOutlineDotsVertical />}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
