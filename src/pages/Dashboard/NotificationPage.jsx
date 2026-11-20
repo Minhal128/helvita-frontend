@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { FaTrash } from 'react-icons/fa';
 import { RiBankFill } from "react-icons/ri";
-import { plaidAPI } from '../../services/api';
+import { supportAPI } from '../../services/api';
+import toast from 'react-hot-toast';
 
 const NotificationPage = () => {
     const [activeBtn, setActiveBtn] = useState("all")
@@ -15,23 +16,16 @@ const NotificationPage = () => {
     const fetchNotifications = async () => {
         try {
             setLoading(true);
-            // Generate notifications from recent transactions
-            const transRes = await plaidAPI.getTransactions().catch(() => ({ data: { transactions: [] } }));
-            const transactions = transRes.data?.transactions || [];
-            
-            // Convert transactions to notifications
-            const notifs = transactions.slice(0, 10).map((t, index) => ({
-                id: t.transaction_id || index,
-                type: t.amount > 0 ? 'expense' : 'deposit',
-                title: t.amount > 0 ? 'Payment made' : 'Deposit received',
-                message: t.amount > 0 
-                    ? `Payment of $${Math.abs(t.amount).toFixed(2)} to ${t.name || t.merchant_name || 'merchant'}`
-                    : `Deposit of $${Math.abs(t.amount).toFixed(2)} has been received`,
-                date: new Date(t.date).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }),
-                read: index > 2 // Mark first 3 as unread
-            }));
-            
-            setNotifications(notifs);
+            const res = await supportAPI.getNotifications();
+            if (res.error) toast.error(res.error);
+            setNotifications((res.notifications || []).map((n) => ({
+                id: n._id,
+                type: n.type,
+                title: n.title,
+                message: n.message,
+                date: new Date(n.createdAt).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }),
+                read: n.read, // state as of this visit; the server marks them read once listed
+            })));
         } catch (error) {
             console.error('Error fetching notifications:', error);
         } finally {
@@ -46,7 +40,12 @@ const NotificationPage = () => {
         return true;
     });
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
+        const res = await supportAPI.deleteNotification(id).catch(() => ({ error: 'Failed to delete notification' }));
+        if (res.error) {
+            toast.error(res.error);
+            return;
+        }
         setNotifications(prev => prev.filter(n => n.id !== id));
     };
 

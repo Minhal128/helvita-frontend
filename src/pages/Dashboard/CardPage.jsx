@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { importJWK, CompactEncrypt } from 'jose'
 import { useTranslation } from 'react-i18next'
 import PieImage from '../../assets/dashboard/pie.svg'
 import { IoIosCard } from "react-icons/io";
@@ -9,6 +10,15 @@ import { IoSync } from "react-icons/io5";
 import { cardAPI, plaidAPI, authAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 
+// ponytail: load Stripe.js from Stripe's CDN (required by Stripe anyway) instead of adding @stripe/stripe-js
+const loadStripeJs = () => window.Stripe ? Promise.resolve(window.Stripe) : new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/';
+    script.onload = () => resolve(window.Stripe);
+    script.onerror = reject;
+    document.head.appendChild(script);
+});
+
 const CardPage = () => {
     const navigate = useNavigate();
     const { t } = useTranslation();
@@ -17,11 +27,33 @@ const CardPage = () => {
     const [loading, setLoading] = useState(true);
     const [userProfile, setUserProfile] = useState(null);
     const [userCard, setUserCard] = useState(null);
-    const [newCard, setNewCard] = useState({ cardNumber: '', cardName: '', expiry: '', cvv: '' });
+    const [newCard, setNewCard] = useState({ cardName: '' });
+    const [savingCard, setSavingCard] = useState(false);
+    const cardFieldRef = useRef(null);
+    const stripeRef = useRef(null);
+    const cardElementRef = useRef(null);
 
     useEffect(() => {
         fetchCardData();
     }, []);
+
+    // Mount Stripe's hosted card field: card number/expiry/CVC go straight to Stripe, never to our API.
+    // Runs after the loading spinner is gone, because the field's container only exists then.
+    useEffect(() => {
+        if (loading) return;
+        let cancelled = false;
+        loadStripeJs().then((Stripe) => {
+            if (cancelled || !cardFieldRef.current) return;
+            stripeRef.current = stripeRef.current || Stripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+            cardElementRef.current = stripeRef.current.elements().create('card', { hidePostalCode: true });
+            cardElementRef.current.mount(cardFieldRef.current);
+        }).catch(() => toast.error('Could not load the secure card form'));
+        return () => {
+            cancelled = true;
+            cardElementRef.current?.destroy();
+            cardElementRef.current = null;
+        };
+    }, [loading]);
 
     const fetchCardData = async () => {
         try {
@@ -62,36 +94,82 @@ const CardPage = () => {
     };
 
     const handleSaveCard = async () => {
-        if (!newCard.cardNumber || !newCard.cardName) {
-            toast.error('Please fill card number and name');
+        if (!newCard.cardName) {
+            toast.error('Please enter the name on the card');
             return;
         }
-        if (!newCard.expiry) {
-            toast.error('Please enter expiry date (MM/YY)');
+        if (!stripeRef.current || !cardElementRef.current) {
+            toast.error('Card form is still loading');
             return;
         }
+        setSavingCard(true);
         try {
-            const response = await cardAPI.addCard(newCard);
+            const intent = await cardAPI.createSetupIntent();
+            if (intent.error) {
+                toast.error(intent.error);
+                return;
+            }
+            const { setupIntent, error } = await stripeRef.current.confirmCardSetup(intent.clientSecret, {
+                payment_method: { card: cardElementRef.current, billing_details: { name: newCard.cardName } },
+            });
+            if (error) {
+                toast.error(error.message);
+                return;
+            }
+            const response = await cardAPI.addCard({ paymentMethodId: setupIntent.payment_method });
             if (response.error) {
                 toast.error(response.error);
                 return;
             }
             toast.success('Card added successfully');
-            setNewCard({ cardNumber: '', cardName: '', expiry: '', cvv: '' });
+            setNewCard({ cardName: '' });
+            cardElementRef.current.clear();
             fetchCardData();
         } catch (error) {
             console.error('Add card error:', error);
             toast.error('Failed to add card');
+        } finally {
+            setSavingCard(false);
         }
     };
 
     const handleBlockCard = async () => {
         try {
-            await cardAPI.blockCard();
+            const response = await cardAPI.blockCard();
+            if (response.error) {
+                toast.error(response.error);
+                return;
+            }
             toast.success('Card blocked successfully');
             fetchCardData();
         } catch (error) {
             toast.error('Failed to block card');
+        }
+    };
+
+    const handleChangePin = async () => {
+        const pin = window.prompt('Enter a new 4-digit PIN');
+        if (pin === null) return;
+        if (!/^\d{4}$/.test(pin)) {
+            toast.error('PIN must be exactly 4 digits');
+            return;
+        }
+        try {
+            // Stripe requires the PIN encrypted in the browser with its public key (JWE), fetched fresh each time
+            const keyData = await fetch('https://issuing-key.stripe.com/v1/keys').then((r) => r.json());
+            const publicKey = await importJWK(keyData.jwk, 'RSA-OAEP');
+            const encryptedPin = await new CompactEncrypt(new TextEncoder().encode(pin))
+                .setProtectedHeader({ alg: 'RSA-OAEP', enc: 'A128CBC-HS256', kid: keyData.key_id })
+                .encrypt(publicKey);
+            const response = await cardAPI.changePin(encryptedPin);
+            if (response.error) {
+                toast.error(response.error);
+                return;
+            }
+            toast.success('PIN changed');
+        } catch (error) {
+            console.error('Change PIN error:', error);
+            toast.error('Failed to change PIN');
         }
     };
 
@@ -291,7 +369,7 @@ const CardPage = () => {
                                 <p className='text-gray'>Instantly block your card</p>
                             </div>
                         </div>
-                        <div className='flex items-center gap-x-3 mt-2'>
+                        <div className='flex items-center gap-x-3 mt-2 cursor-pointer hover:bg-gray-50 p-2 rounded-md' onClick={handleChangePin}>
                             <div className='w-8 h-8 rounded-full bg-[#F4F6F9] text-blue text-xl flex justify-center items-center'><IoSync  /></div>
                             <div>
                                 <h1 className='font-semibold'>Change pin code</h1>
@@ -324,39 +402,19 @@ const CardPage = () => {
 
                 <div className='flex justify-between items-center'>
                     <h1 className='font-semibold'>Add card</h1>
-                    <button onClick={handleSaveCard} className='bg-blue text-white px-3 py-2 rounded-lg'>Save Card</button>
+                    <button onClick={handleSaveCard} disabled={savingCard} className='bg-blue text-white px-3 py-2 rounded-lg disabled:opacity-60'>{savingCard ? 'Saving...' : 'Save Card'}</button>
                 </div>
 
-                <div className='mt-2 flex justify-between items-center flex-wrap'>
-                    <input 
-                        type="text" 
-                        placeholder='Card number' 
-                        value={newCard.cardNumber}
-                        onChange={(e) => setNewCard({...newCard, cardNumber: e.target.value})}
-                        className='px-3 py-2 w-[18rem] mt-2 rounded-md outline-none border border-[#dadada]' 
-                    />
-                    <input 
-                        type="text" 
-                        placeholder='Card name' 
+                <div className='mt-2 flex justify-between items-center flex-wrap gap-2'>
+                    <input
+                        type="text"
+                        placeholder='Name on card'
                         value={newCard.cardName}
-                        onChange={(e) => setNewCard({...newCard, cardName: e.target.value})}
-                        className='px-3 py-2 w-[15rem] mt-2 rounded-md outline-none border border-[#dadada]' 
+                        onChange={(e) => setNewCard({ cardName: e.target.value })}
+                        className='px-3 py-2 w-[15rem] mt-2 rounded-md outline-none border border-[#dadada]'
                     />
-                    <input 
-                        type="text" 
-                        placeholder='mm/yy' 
-                        value={newCard.expiry}
-                        onChange={(e) => setNewCard({...newCard, expiry: e.target.value})}
-                        className='px-3 py-2 mt-2 rounded-md outline-none border border-[#dadada]' 
-                    />
-                    <input 
-                        type="text" 
-                        placeholder='CVV' 
-                        value={newCard.cvv}
-                        onChange={(e) => setNewCard({...newCard, cvv: e.target.value})}
-                        className='px-3 py-2 mt-2 rounded-md outline-none border border-[#dadada]' 
-                    />
-
+                    {/* Stripe-hosted field: card number, expiry and CVC */}
+                    <div ref={cardFieldRef} className='flex-1 min-w-[18rem] px-3 py-3 mt-2 rounded-md border border-[#dadada]' />
                 </div>
 
 

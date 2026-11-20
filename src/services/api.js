@@ -76,6 +76,33 @@ export const authAPI = {
     return response.json();
   },
 
+  clerkLogin: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/auth/clerk-login`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ token }),
+    });
+    return response.json();
+  },
+
+  requestEmailChange: async (currentEmail, newEmail) => {
+    const response = await fetch(`${API_BASE_URL}/auth/change-email/request`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ currentEmail, newEmail }),
+    });
+    return response.json();
+  },
+
+  confirmEmailChange: async (otp) => {
+    const response = await fetch(`${API_BASE_URL}/auth/change-email/confirm`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ otp }),
+    });
+    return response.json();
+  },
+
   getProfile: async () => {
     const response = await fetch(`${API_BASE_URL}/auth/profile`, {
       method: "GET",
@@ -198,6 +225,14 @@ export const businessAPI = {
 
 // Admin APIs
 export const adminAPI = {
+  me: async () => {
+    const response = await fetch(`${API_BASE_URL}/admin/me`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
   getPendingUsers: async () => {
     const response = await fetch(`${API_BASE_URL}/admin/users/pending`, {
       method: "GET",
@@ -447,10 +482,19 @@ export const cardAPI = {
     return response.json();
   },
 
-  changePin: async () => {
+  createSetupIntent: async () => {
+    const response = await fetch(`${API_BASE_URL}/card/setup-intent`, {
+      method: "POST",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  changePin: async (encryptedPin) => {
     const response = await fetch(`${API_BASE_URL}/card/change-pin`, {
       method: "POST",
       headers: getHeaders(),
+      body: JSON.stringify({ encryptedPin }),
     });
     return response.json();
   },
@@ -464,11 +508,11 @@ export const cardAPI = {
     return response.json();
   },
 
-  createInvoice: async (amount, description) => {
+  createInvoice: async ({ customerName, customerEmail, amount, description }) => {
     const response = await fetch(`${API_BASE_URL}/card/invoice`, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify({ amount, description }),
+      body: JSON.stringify({ customerName, customerEmail, amount, description }),
     });
     return response.json();
   },
@@ -516,6 +560,22 @@ export const supportAPI = {
       method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({ emails }),
+    });
+    return response.json();
+  },
+
+  getNotifications: async () => {
+    const response = await fetch(`${API_BASE_URL}/support/notifications`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+    return response.json();
+  },
+
+  deleteNotification: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/support/notifications/${id}`, {
+      method: "DELETE",
+      headers: getHeaders(),
     });
     return response.json();
   },

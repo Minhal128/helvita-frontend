@@ -20,6 +20,8 @@ const SettingPage = () => {
     const [loading, setLoading] = useState(true)
     const [oldEmail, setOldEmail] = useState('')
     const [newEmail, setNewEmail] = useState('')
+    const [emailCode, setEmailCode] = useState('')
+    const [codeSent, setCodeSent] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [deletePassword, setDeletePassword] = useState('')
     const [deleting, setDeleting] = useState(false)
@@ -75,15 +77,42 @@ const SettingPage = () => {
         }
     }
 
-    const handleUpdateEmail = () => {
-        if (!oldEmail || !newEmail) {
-            toast.error('Please fill in both email fields')
-            return
+    const handleUpdateEmail = async () => {
+        try {
+            // Step 2: confirm the code that was emailed to the new address
+            if (codeSent) {
+                if (!emailCode) {
+                    toast.error('Enter the code sent to your new email')
+                    return
+                }
+                const res = await authAPI.confirmEmailChange(emailCode)
+                if (res.error) {
+                    toast.error(res.error)
+                    return
+                }
+                toast.success('Email updated to ' + res.email)
+                setOldEmail('')
+                setNewEmail('')
+                setEmailCode('')
+                setCodeSent(false)
+                fetchData()
+                return
+            }
+            // Step 1: request a code
+            if (!oldEmail || !newEmail) {
+                toast.error('Please fill in both email fields')
+                return
+            }
+            const res = await authAPI.requestEmailChange(oldEmail, newEmail)
+            if (res.error) {
+                toast.error(res.error)
+                return
+            }
+            toast.success(res.message)
+            setCodeSent(true)
+        } catch {
+            toast.error('Failed to update email')
         }
-        // Here you would call API to update email
-        toast.success('Email update request sent!')
-        setOldEmail('')
-        setNewEmail('')
     }
 
     const handleDeleteAccount = async () => {
@@ -242,14 +271,25 @@ const SettingPage = () => {
                                             type="email" 
                                             value={newEmail}
                                             onChange={(e) => setNewEmail(e.target.value)}
-                                            placeholder='Enter new email address' 
-                                            className='block border border-[#DADADA] mt-2 w-[100%] md:w-[20rem] px-3 py-2 h-[2.8rem] rounded-md text-sm' 
+                                            placeholder='Enter new email address'
+                                            disabled={codeSent}
+                                            className='block border border-[#DADADA] mt-2 w-[100%] md:w-[20rem] px-3 py-2 h-[2.8rem] rounded-md text-sm'
                                         />
-                                        <button 
+                                        {codeSent && (
+                                            <input
+                                                type="text"
+                                                inputMode="numeric"
+                                                value={emailCode}
+                                                onChange={(e) => setEmailCode(e.target.value)}
+                                                placeholder='6-digit code sent to your new email'
+                                                className='block border border-[#DADADA] mt-2 w-[100%] md:w-[20rem] px-3 py-2 h-[2.8rem] rounded-md text-sm'
+                                            />
+                                        )}
+                                        <button
                                             onClick={handleUpdateEmail}
                                             className='bg-blue text-white rounded-md px-9 py-2 mt-3 hover:bg-blue/90'
                                         >
-                                            Update
+                                            {codeSent ? 'Confirm' : 'Update'}
                                         </button>
                                     </div>
                                 )
