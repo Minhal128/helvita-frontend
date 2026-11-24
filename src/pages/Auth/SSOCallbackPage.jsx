@@ -17,16 +17,24 @@ const SSOCallbackPage = () => {
     (async () => {
       // Trade the Clerk session for our own API token (same storage as Google login)
       const result = await authAPI.clerkLogin(await getToken()).catch(() => ({ error: "Apple sign-in failed" }));
-      if (result.error || !result.token) {
+      if (result.error || !(result.token || result.onboardingToken)) {
         toast.error(result.error || "Apple sign-in failed");
         nav("/login");
         return;
       }
 
       localStorage.removeItem("user");
-      localStorage.removeItem("registerEmail");
       localStorage.removeItem("password");
-      localStorage.setItem("token", result.token);
+      localStorage.removeItem("token");
+      localStorage.removeItem("onboardingToken");
+      if (result.onboardingToken) {
+        // Identity not verified yet: setup-only token; setup reads the email from registerEmail
+        localStorage.setItem("onboardingToken", result.onboardingToken);
+        localStorage.setItem("registerEmail", result.email || "");
+      } else {
+        localStorage.removeItem("registerEmail");
+        localStorage.setItem("token", result.token);
+      }
       localStorage.setItem("accountId", result.accountId || "");
       localStorage.setItem("accountType", result.accountType || "business");
       localStorage.setItem("clerkUserId", user.id);

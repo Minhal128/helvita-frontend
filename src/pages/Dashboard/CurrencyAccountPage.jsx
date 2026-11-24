@@ -30,8 +30,6 @@ const CurrencyAccountPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
-  const [showTestActions, setShowTestActions] = useState(false);
-  const [testAmount, setTestAmount] = useState('');
   const [bankInfo, setBankInfo] = useState(null);
   const [showBankActions, setShowBankActions] = useState(false);
   const [bankAmount, setBankAmount] = useState('');
@@ -90,56 +88,12 @@ const CurrencyAccountPage = () => {
     setShowTransactionModal(true);
   };
 
-  const handleTestDeposit = async () => {
-    if (!testAmount || parseFloat(testAmount) <= 0) {
-      toast.error('Please enter a valid amount');
-      return;
-    }
-
-    try {
-      const response = await currencyAPI.deposit(accountId, parseFloat(testAmount));
-      if (response.transaction) {
-        toast.success('Test deposit successful');
-        setTestAmount('');
-        fetchAccountDetails();
-        fetchTransactions(1);
-      } else {
-        toast.error(response.error || 'Failed to process deposit');
-      }
-    } catch (error) {
-      console.error('Error processing deposit:', error);
-      toast.error('Failed to process deposit');
-    }
-  };
-
   const fetchBankInfo = async () => {
     try {
       const response = await currencyAPI.getBankInfo();
       setBankInfo(response);
     } catch (error) {
       console.error('Error fetching bank info:', error);
-    }
-  };
-
-  const handleTestWithdrawal = async () => {
-    if (!testAmount || parseFloat(testAmount) <= 0) {
-      toast.error('Please enter a valid amount');
-      return;
-    }
-
-    try {
-      const response = await currencyAPI.withdraw(accountId, parseFloat(testAmount));
-      if (response.transaction) {
-        toast.success('Test withdrawal successful');
-        setTestAmount('');
-        fetchAccountDetails();
-        fetchTransactions(1);
-      } else {
-        toast.error(response.error || 'Failed to process withdrawal');
-      }
-    } catch (error) {
-      console.error('Error processing withdrawal:', error);
-      toast.error('Failed to process withdrawal');
     }
   };
 

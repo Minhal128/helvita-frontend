@@ -1,8 +1,9 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "https://helvitabackend.vercel.app/api";
 
+// Full session first; the setup-only onboarding token (from OTP / pending-identity login) otherwise
 const getHeaders = () => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token") || localStorage.getItem("onboardingToken");
   return {
     "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
@@ -321,15 +322,6 @@ export const setupAPI = {
     return response.json();
   },
 
-  adminApprove: async (data) => {
-    const response = await fetch(`${API_BASE_URL}/setup/admin-approve`, {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify(data),
-    });
-    return response.json();
-  },
-
   verifyDocumentStatus: async (email, verificationSessionId) => {
     const response = await fetch(
       `${API_BASE_URL}/setup/verify-document-status`,
@@ -638,26 +630,6 @@ export const currencyAPI = {
     const response = await fetch(`${API_BASE_URL}/currency/dashboard`, {
       method: "GET",
       headers: getHeaders(),
-    });
-    return response.json();
-  },
-
-  // Test deposit (for development/testing)
-  deposit: async (accountId, amount, description = 'Test deposit') => {
-    const response = await fetch(`${API_BASE_URL}/currency/accounts/${accountId}/deposit`, {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify({ amount, description }),
-    });
-    return response.json();
-  },
-
-  // Test withdrawal (for development/testing)
-  withdraw: async (accountId, amount, description = 'Test withdrawal') => {
-    const response = await fetch(`${API_BASE_URL}/currency/accounts/${accountId}/withdraw`, {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify({ amount, description }),
     });
     return response.json();
   },

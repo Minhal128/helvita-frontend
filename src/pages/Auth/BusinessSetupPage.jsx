@@ -146,6 +146,10 @@ const BusinessSetupPage = () => {
         try {
             const response = await authAPI.verifyOtp(email, otpCode);
             if (response.success || response.message) {
+                if (response.onboardingToken) {
+                    localStorage.removeItem('token'); // a stale session would shadow it
+                    localStorage.setItem('onboardingToken', response.onboardingToken);
+                }
                 toast.success('Email verified successfully!');
                 setCurrentStep(1);
             } else {

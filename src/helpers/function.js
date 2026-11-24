@@ -4,6 +4,7 @@ export const handleLogout = (router) => {
 
     let loader = toast.loading("Logging out...");
     localStorage.removeItem('token');
+    localStorage.removeItem('onboardingToken');
     localStorage.removeItem('accountId');
     localStorage.removeItem('roleId');
     toast.dismiss(loader)

@@ -60,7 +60,17 @@ const LoginPage = () => {
       setLoading(true);
       try {
         const result = await authAPI.googleLogin(response.credential);
-        if (result.token) {
+        if (result.onboardingToken) {
+          // Identity not verified yet: setup-only token, continue onboarding after email step
+          localStorage.removeItem("token");
+          localStorage.setItem("onboardingToken", result.onboardingToken);
+          localStorage.setItem("registerEmail", result.email || "");
+          localStorage.setItem("accountType", result.accountType || "business");
+          localStorage.setItem("businessSetupStep", "1");
+          toast.success("Signed in. Please finish setting up your account.");
+          nav("/business/setup");
+        } else if (result.token) {
+          localStorage.removeItem("onboardingToken");
           localStorage.removeItem("token");
           localStorage.removeItem("accountId");
           localStorage.removeItem("user");
@@ -160,6 +170,7 @@ const LoginPage = () => {
         localStorage.removeItem("password");
 
         // Set new user data with complete provisioning
+        localStorage.removeItem("onboardingToken");
         localStorage.setItem("token", response.token);
         localStorage.setItem("accountId", response.accountId || "");
         localStorage.setItem("accountType", response.accountType || "business");
@@ -176,6 +187,8 @@ const LoginPage = () => {
           nav("/business/setup");
         } else if (response.code === "IDENTITY_NOT_VERIFIED") {
           toast.error("Please complete identity verification");
+          localStorage.removeItem("token");
+          if (response.onboardingToken) localStorage.setItem("onboardingToken", response.onboardingToken);
           localStorage.setItem("registerEmail", response.email || email);
           localStorage.setItem("accountType", response.accountType || "business");
           // Set step to identity verification
